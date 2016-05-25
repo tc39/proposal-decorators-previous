@@ -10974,7 +10974,7 @@
           IdentifierReference[?Yield]
           CoverInitializedName[?Yield]
           PropertyName[?Yield] `:` AssignmentExpression[In, ?Yield]
-          MethodDefinition[?Yield]
+          DecoratorList[?Yield]? MethodDefinition[?Yield]
 
         PropertyName[Yield] :
           LiteralPropertyName
@@ -10991,9 +10991,17 @@
         CoverInitializedName[Yield] :
           IdentifierReference[?Yield] Initializer[In, ?Yield]
 
+        CoverMemberExpressionSquareBracketsAndComputedPropertyName[Yield] :
+          `[` Expression[In, ?Yield] `]`
+
         Initializer[In, Yield] :
           `=` AssignmentExpression[?In, ?Yield]
       </emu-grammar>
+      <emu-note>
+        NOTE The production |CoverMemberExpressionSquareBracketsAndComputedPropertyName| is used
+        to cover parsing a MemberExpression that is part of a Decorator inside of an |ObjectLiteral|
+        or |ClassBody|, to avoid lookahead when parsing a decorator against a |ComputedPropertyName|.
+      </emu-note>
       <emu-note>
         <p>|MethodDefinition| is defined in <emu-xref href="#sec-method-definitions"></emu-xref>.</p>
       </emu-note>
@@ -11544,6 +11552,7 @@
     <emu-grammar>
       MemberExpression[Yield] :
         PrimaryExpression[?Yield]
+        MemberExpression [?Yield] CoverMemberExpressionSquareBracketsAndComputedPropertyName[?Yield]
         MemberExpression[?Yield] `[` Expression[In, ?Yield] `]`
         MemberExpression[?Yield] `.` IdentifierName
         MemberExpression[?Yield] TemplateLiteral[?Yield]
@@ -11552,7 +11561,7 @@
         `new` MemberExpression[?Yield] Arguments[?Yield]
 
       SuperProperty[Yield] :
-        `super` `[` Expression[In, ?Yield] `]`
+        `super` CoverMemberExpressionSquareBracketsAndComputedPropertyName[?Yield]
         `super` `.` IdentifierName
 
       MetaProperty :
@@ -18313,7 +18322,7 @@
     <!-- es6num="14.3.8" -->
     <emu-clause id="sec-runtime-semantics-definemethod">
       <h1>Runtime Semantics: DefineMethod</h1>
-      <p>With parameters _object_ and optional parameter _functionPrototype_.</p>
+      <p>With optional parameter _functionPrototype_.</p>
       <emu-grammar>MethodDefinition : PropertyName `(` StrictFormalParameters `)` `{` FunctionBody `}`</emu-grammar>
       <emu-alg>
         1. Let _propKey_ be the result of evaluating |PropertyName|.
@@ -18322,8 +18331,8 @@
         1. Let _scope_ be the running execution context's LexicalEnvironment.
         1. If _functionPrototype_ was passed as a parameter, let _kind_ be ~Normal~; otherwise let _kind_ be ~Method~.
         1. Let _closure_ be FunctionCreate(_kind_, |StrictFormalParameters|, |FunctionBody|, _scope_, _strict_). If _functionPrototype_ was passed as a parameter, then pass its value as the _prototype_ optional argument of FunctionCreate.
-        1. Perform MakeMethod(_closure_, _object_).
-        1. Return the Record{[[Key]]: _propKey_, [[Closure]]: _closure_}.
+        1. Let _desc_ be the PropertyDescriptor{[[Value]]: _closure_, [[Writable]]: *true*, [[Enumerable]]: _enumerable_, [[Configurable]]: *true*}.
+        1. Return the Record{[[Key]]: _propKey_, [[Descriptor]]: _desc_}.
       </emu-alg>
     </emu-clause>
 
@@ -18332,40 +18341,44 @@
       <h1>Runtime Semantics: PropertyDefinitionEvaluation</h1>
       <p>With parameters _object_ and _enumerable_.</p>
       <emu-see-also-para op="PropertyDefinitionEvaluation"></emu-see-also-para>
-      <emu-grammar>MethodDefinition : PropertyName `(` StrictFormalParameters `)` `{` FunctionBody `}`</emu-grammar>
+      <emu-grammar>MethodDefinition : DecoratorList[?Yield]? PropertyName `(` StrictFormalParameters `)` `{` FunctionBody `}`</emu-grammar>
       <emu-alg>
+        1. Let _decorators_ be the result of evaluating DecoratorList[?Yield]?.
+        1. ReturnIfAbrupt(_decorators_).
         1. Let _methodDef_ be DefineMethod of |MethodDefinition| with argument _object_.
         1. ReturnIfAbrupt(_methodDef_).
         1. Perform SetFunctionName(_methodDef_.[[Closure]], _methodDef_.[[Key]]).
         1. Let _desc_ be the PropertyDescriptor{[[Value]]: _methodDef_.[[Closure]], [[Writable]]: *true*, [[Enumerable]]: _enumerable_, [[Configurable]]: *true*}.
-        1. Return ? DefinePropertyOrThrow(_object_, _methodDef_.[[Key]], _desc_).
+        1. Return the Record{[[Key]]: _methodDef_.[[Key]], [[Desc]]: _desc_, [[Decorators]]: _decorators_}.
       </emu-alg>
       <emu-grammar>MethodDefinition : GeneratorMethod</emu-grammar>
       <p>See <emu-xref href="#sec-generator-function-definitions"></emu-xref>.</p>
-      <emu-grammar>MethodDefinition : `get` PropertyName `(` `)` `{` FunctionBody `}`</emu-grammar>
+      <emu-grammar>MethodDefinition : DecoratorList[?Yield]? `get` PropertyName `(` `)` `{` FunctionBody `}`</emu-grammar>
       <emu-alg>
+        1. Let _decorators_ be the result of evaluating DecoratorList[?Yield]?.
+        1. ReturnIfAbrupt(_decorators_).
         1. Let _propKey_ be the result of evaluating |PropertyName|.
         1. ReturnIfAbrupt(_propKey_).
         1. If the function code for this |MethodDefinition| is strict mode code, let _strict_ be *true*. Otherwise let _strict_ be *false*.
         1. Let _scope_ be the running execution context's LexicalEnvironment.
         1. Let _formalParameterList_ be the production <emu-grammar>FormalParameters : [empty]</emu-grammar>.
         1. Let _closure_ be FunctionCreate(~Method~, _formalParameterList_, |FunctionBody|, _scope_, _strict_).
-        1. Perform MakeMethod(_closure_, _object_).
         1. Perform SetFunctionName(_closure_, _propKey_, `"get"`).
         1. Let _desc_ be the PropertyDescriptor{[[Get]]: _closure_, [[Enumerable]]: _enumerable_, [[Configurable]]: *true*}.
-        1. Return ? DefinePropertyOrThrow(_object_, _propKey_, _desc_).
+        1. Return the Record{[[Key]]: _methodDef_.[[Key]], [[Desc]]: _desc_, [[Decorators]]: _decorators_}.
       </emu-alg>
-      <emu-grammar>MethodDefinition : `set` PropertyName `(` PropertySetParameterList `)` `{` FunctionBody `}`</emu-grammar>
+      <emu-grammar>MethodDefinition : DecoratorList[?Yield]? `set` PropertyName `(` PropertySetParameterList `)` `{` FunctionBody `}`</emu-grammar>
       <emu-alg>
+        1. Let _decorators_ be the result of evaluating DecoratorList[?Yield]?.
+        1. ReturnIfAbrupt(_decorators_).
         1. Let _propKey_ be the result of evaluating |PropertyName|.
         1. ReturnIfAbrupt(_propKey_).
         1. If the function code for this |MethodDefinition| is strict mode code, let _strict_ be *true*. Otherwise let _strict_ be *false*.
         1. Let _scope_ be the running execution context's LexicalEnvironment.
         1. Let _closure_ be FunctionCreate(~Method~, |PropertySetParameterList|, |FunctionBody|, _scope_, _strict_).
-        1. Perform MakeMethod(_closure_, _object_).
         1. Perform SetFunctionName(_closure_, _propKey_, `"set"`).
         1. Let _desc_ be the PropertyDescriptor{[[Set]]: _closure_, [[Enumerable]]: _enumerable_, [[Configurable]]: *true*}.
-        1. Return ? DefinePropertyOrThrow(_object_, _propKey_, _desc_).
+        1. Return the Record{[[Key]]: _methodDef_.[[Key]], [[Desc]]: _desc_, [[Decorators]]: _decorators_}.
       </emu-alg>
     </emu-clause>
   </emu-clause>
@@ -18623,19 +18636,20 @@
       <h1>Runtime Semantics: PropertyDefinitionEvaluation</h1>
       <p>With parameter _object_ and _enumerable_.</p>
       <emu-see-also-para op="PropertyDefinitionEvaluation"></emu-see-also-para>
-      <emu-grammar>GeneratorMethod : `*` PropertyName `(` StrictFormalParameters `)` `{` GeneratorBody `}`</emu-grammar>
+      <emu-grammar>GeneratorMethod : DecoratorList[?Yield]? `*` PropertyName `(` StrictFormalParameters `)` `{` GeneratorBody `}`</emu-grammar>
       <emu-alg>
+        1. Let _decorators_ be the result of evaluating DecoratorList[?Yield]?.
+        1. ReturnIfAbrupt(_decorators_).
         1. Let _propKey_ be the result of evaluating |PropertyName|.
         1. ReturnIfAbrupt(_propKey_).
         1. If the function code for this |GeneratorMethod| is strict mode code, let _strict_ be *true*. Otherwise let _strict_ be *false*.
         1. Let _scope_ be the running execution context's LexicalEnvironment.
         1. Let _closure_ be GeneratorFunctionCreate(~Method~, |StrictFormalParameters|, |GeneratorBody|, _scope_, _strict_).
-        1. Perform MakeMethod(_closure_, _object_).
         1. Let _prototype_ be ObjectCreate(%GeneratorPrototype%).
         1. Perform DefinePropertyOrThrow(_closure_, `"prototype"`, PropertyDescriptor{[[Value]]: _prototype_, [[Writable]]: *true*, [[Enumerable]]: *false*, [[Configurable]]: *false*}).
         1. Perform SetFunctionName(_closure_, _propKey_).
         1. Let _desc_ be the PropertyDescriptor{[[Value]]: _closure_, [[Writable]]: *true*, [[Enumerable]]: _enumerable_, [[Configurable]]: *true*}.
-        1. Return ? DefinePropertyOrThrow(_object_, _propKey_, _desc_).
+        1. Return the Record{[[Key]]: _propKey_, [[Desc]]: _desc_, [[Decorators]]: _decorators_}.
       </emu-alg>
     </emu-clause>
 
@@ -18722,17 +18736,29 @@
     </emu-clause>
   </emu-clause>
 
+  <emu-clause id="sec-decorator-list">
+    <h1>Decorators</h1>
+    <h2>Syntax</h2>
+    <emu-grammar>
+      DecoratorList[Yield] :
+        DecoratorList[?Yield]? Decorator[?Yield]
+
+      Decorator[Yield] :
+        `@` LeftHandSideExpression[?Yield]
+    </emu-grammar>
+  </emu-clause>
+
   <!-- es6num="14.5" -->
   <emu-clause id="sec-class-definitions">
     <h1>Class Definitions</h1>
     <h2>Syntax</h2>
     <emu-grammar>
       ClassDeclaration[Yield, Default] :
-        `class` BindingIdentifier[?Yield] ClassTail[?Yield]
-        [+Default] `class` ClassTail[?Yield]
+        DecoratorList[?Yield]? `class` BindingIdentifier[?Yield] ClassTail[?Yield]
+        [+Default] DecoratorList[?Yield]? `class` ClassTail[?Yield]
 
       ClassExpression[Yield] :
-        `class` BindingIdentifier[?Yield]? ClassTail[?Yield]
+        DecoratorList [?Yield]? `class` BindingIdentifier[?Yield]? ClassTail[?Yield]
 
       ClassTail[Yield] :
         ClassHeritage[?Yield]? `{` ClassBody[?Yield]? `}`
@@ -18748,8 +18774,8 @@
         ClassElementList[?Yield] ClassElement[?Yield]
 
       ClassElement[Yield] :
-        MethodDefinition[?Yield]
-        `static` MethodDefinition[?Yield]
+        DecoratorList[?Yield]? MethodDefinition[?Yield]
+        DecoratorList[?Yield]? `static` MethodDefinition[?Yield]
         `;`
     </emu-grammar>
     <emu-note>
@@ -19021,27 +19047,56 @@
               <pre><code class="javascript">constructor( ){ }</code></pre>
               using the syntactic grammar with the goal symbol |MethodDefinition|.
         1. Set the running execution context's LexicalEnvironment to _classScope_.
-        1. Let _constructorInfo_ be the result of performing DefineMethod for _constructor_ with arguments _proto_ and _constructorParent_ as the optional _functionPrototype_ argument.
-        1. Assert: _constructorInfo_ is not an abrupt completion.
-        1. Let _F_ be _constructorInfo_.[[Closure]].
-        1. If |ClassHeritage_opt| is present and _protoParent_ is not *null*, then set _F_'s [[ConstructorKind]] internal slot to `"derived"`.
-        1. Perform MakeConstructor(_F_, *false*, _proto_).
-        1. Perform MakeClassConstructor(_F_).
-        1. Perform CreateMethodProperty(_proto_, `"constructor"`, _F_).
         1. If |ClassBody_opt| is not present, let _methods_ be a new empty List.
         1. Else, let _methods_ be NonConstructorMethodDefinitions of |ClassBody|.
+        1. Let _elements_ be a new empty List.
         1. For each |ClassElement| _m_ in order from _methods_
-          1. If IsStatic of _m_ is *false*, then
-            1. Let _status_ be the result of performing PropertyDefinitionEvaluation for _m_ with arguments _proto_ and *false*.
+          1. Let _static_ be IsStatic of _m_.
+          1. Let _el_ be the result of performing PropertyDefinitionEvaluation for _m_.
+          1. If _el_ is an abrupt completion, then
+            1. Set the running execution context's LexicalEnvironment to _lex_.
+            1. Return Completion(_el_).
+          1. Else, let _descriptor_ be _descriptor_.[[value]].
+          1. Let _element_ be the Record{[[Kind]]: `"property"`, [[Static]]: _static_, [[Key]]: _descriptor_.[[Key]], [[Descriptor]]: _descriptor_.[[Descriptor]]}.
+          1. Append _element_ to the end of _elements_.
+        1. Let _coalesced_ be the new List created by combining getter and setter with the same [[Key]]. If both a getter and setter with the same [[Key]] have a non-empty [[Decorators]], throw a new Error.
+        1. Let _classDefinition_ be MakeClassDefinition()
+        1. Let _elementDescriptors_ be a new empty List.
+        1. For each _element_ in order from _coalesced_
+          1. Let _descriptors_ be ? DecorateElement(_element_).
+          1. For each _descriptor_ in order from _descriptors
+            1. Append _descriptor_ to the end of _elementDescriptors_.
+              // TODO: the return value from DecorateElement is a record
+              // that contains a list of uninitialized closures
+        1. Let _constructorInfo_ be the result of performing DefineMethod for _constructor_ with _constructorParent_ as the optional _functionPrototype_ argument.
+          // TODO: the class decorator takes the heritage as an argument
+        1. Assert: _constructorInfo_ is not an abrupt completion.
+        1. Let _originalF_ be _constructorInfo_.[[Closure]].
+        1. Let _F_ be MakeUninitializedConstructor(_originalF_).
+        1. Let _descriptors_ be ? DecorateClass(_F_, _constructorParent_).
+        1. For each _descriptor_ in order from _descriptors
+          1. Append _descriptor_ to the end of _elementDescriptors_.
+        1. Let _constructor_ be GetConstructorFromDescriptors(_elementDescriptors_).
+        1. If |ClassHeritage_opt| is present and _protoParent_ is not *null*, then set _constructor_'s [[ConstructorKind]] internal slot to `"derived"`.
+        1. Perform MakeConstructor(_constructor_, *false*, _proto_).
+        1. Perform MakeClassConstructor(_constructor_).
+        1. Perform CreateMethodProperty(_proto_, `"constructor"`, _constructor_).
+        1. For each _descriptor_ in order from _elementDescriptors_
+          1. If _descriptor_.[[Kind]] is not `"property"`, continue.
+          1. If _descriptor_.[[Static]] is *false*, then
+            1. Let _status_ be DefinePropertyOrThrow(_proto_, _descriptor_.[[Key]], _descriptor_.[[Descriptor]])
           1. Else,
-            1. Let _status_ be the result of performing PropertyDefinitionEvaluation for _m_ with arguments _F_ and *false*.
+            1. Let _status_ be DefinePropertyOrThrow(_constructor_, _descriptor_.[[Key]], _descriptor_.[[Descriptor]])
           1. If _status_ is an abrupt completion, then
             1. Set the running execution context's LexicalEnvironment to _lex_.
             1. Return Completion(_status_).
+        1. Perform MakeClassElementsInitialized(_elementDescriptors_).
         1. Set the running execution context's LexicalEnvironment to _lex_.
         1. If _className_ is not *undefined*, then
-          1. Perform _classScopeEnvRec_.InitializeBinding(_className_, _F_).
-        1. Return _F_.
+          1. Perform _classScopeEnvRec_.InitializeBinding(_className_, _constructor_).
+        1. Let _finisher_ be GetFinisherFromDescriptors(_elementDescriptors_).
+        1. Call ? _finisher_(_constructor_).
+        1. Return _constructor_.
       </emu-alg>
     </emu-clause>
 
