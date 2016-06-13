@@ -14,7 +14,7 @@ ES5 constructors had a dual-purpose: they got invoked both when the constructor 
 
 This made it possible to use a single constructor for both purposes, but required constructor writers to defend against consumers accidentally `[[Call]]`ing the constructor.
 
-ES6 classes do not support `[[Call]]`ing the constructor at all, which means that classes do not need to defend themselves against being inadvertantly `[[Call]]`ed.
+ES6 classes do not support `[[Call]]`ing the constructor at all, which means that classes do not need to defend themselves against being inadvertently `[[Call]]`ed.
 
 In ES6, if you want to implement a constructor that can be both `[[Call]]`ed and `[[Construct]]`ed, you can write the constructor as an ES5 function, and use `new.target` to differentiate between the two cases.
 
