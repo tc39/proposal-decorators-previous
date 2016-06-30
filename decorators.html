@@ -1,0 +1,167 @@
+<!doctype html>
+<meta charset="utf8">
+<link rel="stylesheet" href="ecmarkup.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+<script src="ecmarkup.js"></script>
+<pre class=metadata>
+title: Decorators
+stage: 2
+contributors: Yehuda Katz, Brian Terlson, Ecma International
+</pre>
+<emu-intro>
+  <h1>Introduction</h1>
+  <p>This is the most awesome decorator explainer imaginable.</p>
+</emu-intro>
+
+<emu-clause id="sec-syntax">
+  <h1>Syntax</h1>
+
+  <emu-clause id="sec-new-syntax">
+    <h1>New Productions</h1>
+
+    <emu-grammar>
+      DecoratorList[Yield] :
+        DecoratorList[?Yield]? Decorator[?Yield]
+
+      Decorator[Yield] :
+        `@` DecoratorMemberExpression[?Yield]
+        `@` DecoratorCallExpression[?Yield]
+
+      DecoratorMemberExpression[Yield] :
+        IdentifierReference[?Yield]
+        DecoratorMemberExpression[?Yield] `.` IdentifierName
+
+      DecoratorCallExpression[Yield] :
+        DecoratorMemberExpression Arguments[?Yield]
+    </emu-grammar>
+  </emu-clause>
+
+  <emu-clause id="sec-updated-syntax">
+    <h1>Updated Productions</h1>
+
+    <p><emu-grammar>PropertyDefinition : MethodDefinition</emu-grammar> gets an optional |DecoratorList|.</p>
+    <emu-grammar>
+      PropertyDefinition[Yield] :
+        IdentifierReference[?Yield]
+        CoverInitializedName[?Yield]
+        PropertyName[?Yield] `:` AssignmentExpression[+In, ?Yield]
+        DecoratorList[?Yield]? MethodDefinition[?Yield]
+    </emu-grammar>
+
+    <p><emu-grammar>ClassDeclaration : `class` BindingIdentifier ClassTail</emu-grammar> and <emu-grammar>ClassDeclaration : [+Default] `class` ClassTail</emu-grammar> get an optional |DecoratorList|.</p>
+    <emu-grammar>
+      ClassDeclaration[Yield, Default] :
+        DecoratorList[?Yield]? `class` BindingIdentifier[?Yield] ClassTail[?Yield]
+        [+Default] DecoratorList[?Yield]? `class` ClassTail[?Yield]
+    </emu-grammar>
+
+    <p><emu-grammar>ClassExpression : `class` BindingIdentifier? ClassTail</emu-grammar> gets an optional |DecoratorList|.</p>
+    <emu-grammar>
+      ClassExpression[Yield] :
+        DecoratorList [?Yield]? `class` BindingIdentifier[?Yield]? ClassTail[?Yield]
+    </emu-grammar>
+
+    <p><emu-grammar>ClassElement : MethodDefinition</emu-grammar> and <emu-grammar>ClassElement : `static` MethodDefinition</emu-grammar> gets an optional |DecoratorList|.</p>
+    <emu-grammar>
+      ClassElement[Yield] :
+        DecoratorList[?Yield]? MethodDefinition[?Yield]
+        DecoratorList[?Yield]? `static` MethodDefinition[?Yield]
+    </emu-grammar>
+  </emu-clause>
+</emu-clause>
+
+<emu-clause id="sec-semantics">
+  <h1>Semantics</h1>
+
+  <emu-clause id="sec-updated-semantics">
+    <h1>Updated Operations</h1>
+
+    <emu-clause id="sec-runtime-semantics-definemethod">
+      <h1>Runtime Semantics: DefineMethod</h1>
+      <p>With <del>parameters _object_ and</del> optional parameter _functionPrototype_.</p>
+      <emu-grammar>MethodDefinition : PropertyName `(` StrictFormalParameters `)` `{` FunctionBody `}`</emu-grammar>
+      <emu-alg>
+        1. Let _propKey_ be the result of evaluating |PropertyName|.
+        1. ReturnIfAbrupt(_propKey_).
+        1. If the function code for this |MethodDefinition| is strict mode code, let _strict_ be *true*. Otherwise let _strict_ be *false*.
+        1. Let _scope_ be the running execution context's LexicalEnvironment.
+        1. If _functionPrototype_ was passed as a parameter, let _kind_ be ~Normal~; otherwise let _kind_ be ~Method~.
+        1. Let _closure_ be FunctionCreate(_kind_, |StrictFormalParameters|, |FunctionBody|, _scope_, _strict_). If _functionPrototype_ was passed as a parameter, then pass its value as the _prototype_ optional argument of FunctionCreate.
+        1. <del>Perform MakeMethod(_closure_, _object_).</del>
+        1. <del>Return the Record{[[Key]]: _propKey_, [[Closure]]: _closure_}.</del>
+        1. <ins>Let _desc_ be the PropertyDescriptor{[[Value]]: _closure_, [[Writable]]: *true*, [[Enumerable]]: _enumerable_, [[Configurable]]: *true*}.</ins>
+        1. <ins>Return the Record{[[Key]]: _propKey_, [[Descriptor]]: _desc_}.</ins>
+      </emu-alg>
+    </emu-clause>
+  </emu-clause>
+
+  <emu-clause id="sec-new-semantics">
+    <h1>New Operations</h1>
+    <emu-clause id="sec-decorator-runtime-semantics-decoratorevaluation">
+      <h1>Runtime Semantics: DecoratorEvaluation</h1>
+      <emu-grammar>Decorator : `@` DecoratorMemberExpression[?Yield]</emu-grammar>
+      <emu-alg>
+        1. Let _ref be the result of evaluating |DecoratorMemberExpression|.
+        1. Let _value be ? GetValue(_ref_).
+        1. Return _value_.
+      </emu-alg>
+      <emu-grammar>Decorator : `@` DecoratorCallExpression[?Yield]</emu-grammar>
+      <emu-alg>
+        1. Let _ref be the result of evaluating |DecoratorCallExpression|.
+        1. Let _value be ? GetValue(_ref_).
+        1. Return _value_.
+      </emu-alg>
+    </emu-clause>
+
+    <emu-clause id="sec-method-definitions-runtime-semantics-decoratorlistevaluation">
+      <h1>Runtime Semantics: DecoratorListEvaluation</h1>
+      <emu-grammar>DecoratorList : DecoratorList[?Yield]? Decorator[?Yield]</emu-grammar>
+      <emu-alg>
+        1. If |DecoratorList| is present, then let _leftValue_ be ? DecoratorListEvaluation(|DecoratorList|).
+        1. Else, let _leftValue_ be a new empty List.
+        1. Let _rightValue_ be ? DecoratorEvaluation(|Decorator|).
+        1. Append _rightValue_ to the end of _leftValue_.
+        1. Return _leftValue_.
+      </emu-alg>
+    </emu-clause>
+
+    <emu-clause id="sec-runtime-semantics-makefunctionuninitialized">
+      <h1>Runtime Semantics: MakeFunctionUninitialized</h1>
+      <p>With parameter _function_.</p>
+      <emu-note>
+        <p>The semantics of functions leaked to JavaScript during decoration was contentious in Munich. The exact semantics will be driven by implementation considerations.</p>
+      </emu-note>
+    </emu-clause>
+
+    <emu-clause id="sec-runtime-semantics-makefunctioninitialized">
+      <h1>Runtime Semantics: MakeFunctionInitialized</h1>
+      <p>With parameter _function_.</p>
+      <emu-note>
+        <p>The semantics of functions leaked to JavaScript during decoration was contentious in Munich. The exact semantics will be driven by implementation considerations.</p>
+      </emu-note>
+    </emu-clause>
+
+    <emu-clause id="sec-runtime-semantics-makefunctioninitialized">
+      <h1>Runtime Semantics: IsUninitializedFunction</h1>
+      <p>With parameter _function_.</p>
+      <emu-note>
+        <p>The semantics of functions leaked to JavaScript during decoration was contentious in Munich. The exact semantics will be driven by implementation considerations.</p>
+      </emu-note>
+    </emu-clause>
+
+    <emu-clause id="sec-runtime-semantics-makeclasselementsinitialized">
+      <h1>Runtime Semantics: MakeClassElementsInitialized</h1>
+      <p>With parameter _elements_.</p>
+      <emu-alg>
+        1. For each _element_ in order from _elements_
+          1. Let _desc_ be _element_.[[Descriptor]].
+          1. If _desc_ has a [[Set]] field, MakeFunctionInitialized(_desc_.[[Set]]).
+          1. If _desc_ has a [[Get]] field, MakeFunctionInitialized(_desc_.[[Get]]).
+          1. If _desc_ has a [[Value]] field, and IsUninitializedFunction(_desc_.[[Value]]) is *true*, MakeFunctionInitialized(_desc_.[[Value]]).
+      </emu-alg>
+      <emu-note>
+        <p>The semantics of functions leaked to JavaScript during decoration was contentious in Munich. The exact semantics will be driven by implementation considerations.</p>
+      </emu-note>
+    </emu-clause>
+  </emu-clause>
+</emu-clause>
