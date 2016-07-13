@@ -93,6 +93,136 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
         1. <ins>Return the Record{[[Key]]: _propKey_, [[Descriptor]]: _desc_}.</ins>
       </emu-alg>
     </emu-clause>
+
+    <emu-clause id="sec-runtime-semantics-classdefinitionevaluation">
+      <h1>Runtime Semantics: ClassDefinitionEvaluation</h1>
+      <p>With parameter _className_.</p>
+      <emu-note><p>The modifications to ClassDefinitionEvaluation</p></emu-note>
+      <emu-grammar>ClassTail : ClassHeritage? `{` ClassBody? `}`</emu-grammar>
+      <emu-alg>
+        1. Let _lex_ be the LexicalEnvironment of the running execution context.
+        1. Let _classScope_ be NewDeclarativeEnvironment(_lex_).
+        1. Let _classScopeEnvRec_ be _classScope_'s EnvironmentRecord.
+        1. If _className_ is not *undefined*, then
+          1. Perform _classScopeEnvRec_.CreateImmutableBinding(_className_, *true*).
+        1. If |ClassHeritage_opt| is not present, then
+          1. Let _protoParent_ be the intrinsic object %ObjectPrototype%.
+          1. Let _constructorParent_ be the intrinsic object %FunctionPrototype%.
+        1. Else,
+          1. Set the running execution context's LexicalEnvironment to _classScope_.
+          1. Let _superclass_ be the result of evaluating |ClassHeritage|.
+          1. Set the running execution context's LexicalEnvironment to _lex_.
+          1. ReturnIfAbrupt(_superclass_).
+          1. If _superclass_ is *null*, then
+            1. Let _protoParent_ be *null*.
+            1. Let _constructorParent_ be the intrinsic object %FunctionPrototype%.
+          1. Else if IsConstructor(_superclass_) is *false*, throw a *TypeError* exception.
+          1. Else,
+            1. Let _protoParent_ be ? Get(_superclass_, `"prototype"`).
+            1. If Type(_protoParent_) is neither Object nor Null, throw a *TypeError* exception.
+            1. Let _constructorParent_ be _superclass_.
+        1. Let _proto_ be ObjectCreate(_protoParent_).
+        1. If |ClassBody_opt| is not present, let _constructor_ be ~empty~.
+        1. Else, let _constructor_ be ConstructorMethod of |ClassBody|.
+        1. If _constructor_ is ~empty~, then
+          1. If |ClassHeritage_opt| is present and _protoParent_ is not *null*, then
+            1. Let _constructor_ be the result of parsing the source text
+              <pre><code class="javascript">constructor(... args){ super (...args);}</code></pre>
+              using the syntactic grammar with the goal symbol |MethodDefinition[~Yield]|.
+          1. Else,
+            1. Let _constructor_ be the result of parsing the source text
+              <pre><code class="javascript">constructor( ){ }</code></pre>
+              using the syntactic grammar with the goal symbol |MethodDefinition[~Yield]|.
+        1. Set the running execution context's LexicalEnvironment to _classScope_.
+        1. Let _constructorInfo_ be the result of performing DefineMethod for _constructor_ with arguments _proto_ and _constructorParent_ as the optional _functionPrototype_ argument.
+        1. Assert: _constructorInfo_ is not an abrupt completion.
+        1. Let _F_ be _constructorInfo_.[[Closure]].
+        1. If |ClassHeritage_opt| is present and _protoParent_ is not *null*, then set _F_.[[ConstructorKind]] to `"derived"`.
+        1. Perform MakeConstructor(_F_, *false*, _proto_).
+        1. Perform MakeClassConstructor(_F_).
+        1. Perform CreateMethodProperty(_proto_, `"constructor"`, _F_).
+        1. If |ClassBody_opt| is not present, let _methods_ be a new empty List.
+        1. Else, let _methods_ be NonConstructorMethodDefinitions of |ClassBody|.
+        1. For each |ClassElement| _m_ in order from _methods_
+          1. <ins>If _m_'s |DecoratorList| is present, then let _decorators_ be the result of performing DecoratorListEvaluation of |DecoratorList|.</ins>
+          1. <ins>Else, let _decorators_ be a new empty List.</ins>
+          1. <ins>ReturnIfAbrupt(_decorators_)</ins>
+          1. If IsStatic of _m_ is *false*, then
+            1. Let _status_ be the result of performing PropertyDefinitionEvaluation for _m_ with arguments _proto_, *false*<ins>, and _decorators_</ins>.
+          1. Else,
+            1. Let _status_ be the result of performing PropertyDefinitionEvaluation for _m_ with arguments _F_ and *false*<ins>, and _decorators_</ins>.
+          1. If _status_ is an abrupt completion, then
+            1. Set the running execution context's LexicalEnvironment to _lex_.
+            1. Return Completion(_status_).
+        1. Set the running execution context's LexicalEnvironment to _lex_.
+        1. If _className_ is not *undefined*, then
+          1. Perform _classScopeEnvRec_.InitializeBinding(_className_, _F_).
+        1. Return _F_.
+      </emu-alg>
+    </emu-clause>
+
+    <emu-clause id="sec-method-definitions-runtime-semantics-propertydefinitionevaluation">
+      <h1>Runtime Semantics: PropertyDefinitionEvaluation</h1>
+      <p>With parameters _object_, _enumerable_<ins>, and _decorators_</ins>.</p>
+      <emu-note><p>The modifications to PropertyDefinitionEvaluation delays actually building the object by returning a record instead of doing the DefineProperty at this point. We also make any closures uninitialized.</p></emu-note>
+      <emu-see-also-para op="PropertyDefinitionEvaluation"></emu-see-also-para>
+      <emu-grammar>MethodDefinition : PropertyName `(` StrictFormalParameters `)` `{` FunctionBody `}`</emu-grammar>
+      <emu-alg>
+        1. Let _methodDef_ be DefineMethod of |MethodDefinition| with argument _object_.
+        1. ReturnIfAbrupt(_methodDef_).
+        1. Perform SetFunctionName(_methodDef_.[[Closure]], _methodDef_.[[Key]]).
+        1. <del>Let _desc_ be the PropertyDescriptor{[[Value]]: _methodDef_.[[Closure]], [[Writable]]: *true*, [[Enumerable]]: _enumerable_, [[Configurable]]: *true*}.</del>
+        1. <del>Return ? DefinePropertyOrThrow(_object_, _methodDef_.[[Key]], _desc_).</del>
+        1. <ins>Let _closure_ be MakeFunctionUninitialized(_methodDef_.[[Closure]]).</ins>
+        1. <ins>Let _desc_ be the PropertyDescriptor{[[Value]]: _closure_, [[Writable]]: *true*, [[Enumerable]]: _enumerable_, [[Configurable]]: *true*}.</ins>
+        1. <ins>Return the Record{[[Key]]: _methodDef_.[[Key]], [[Desc]]: _desc_, [[Decorators]]: _decorators_}.</ins>
+      </emu-alg>
+      <emu-grammar>MethodDefinition : `get` PropertyName `(` `)` `{` FunctionBody `}`</emu-grammar>
+      <emu-alg>
+        1. Let _propKey_ be the result of evaluating |PropertyName|.
+        1. ReturnIfAbrupt(_propKey_).
+        1. If the function code for this |MethodDefinition| is strict mode code, let _strict_ be *true*. Otherwise let _strict_ be *false*.
+        1. Let _scope_ be the running execution context's LexicalEnvironment.
+        1. Let _formalParameterList_ be the production <emu-grammar>FormalParameters : [empty]</emu-grammar>.
+        1. Let _closure_ be FunctionCreate(~Method~, _formalParameterList_, |FunctionBody|, _scope_, _strict_).
+        1. <del>Perform MakeMethod(_closure_, _object_).</del>
+        1. Perform SetFunctionName(_closure_, _propKey_, `"get"`).
+        1. <ins>Let _closure_ be MakeFunctionUninitialized(_closure_).</ins>
+        1. Let _desc_ be the PropertyDescriptor{[[Get]]: _closure_, [[Enumerable]]: _enumerable_, [[Configurable]]: *true*}.
+        1. <del>Return ? DefinePropertyOrThrow(_object_, _propKey_, _desc_).</del>
+        1. <ins>Return the Record{[[Key]]: _propKey_, [[Desc]]: _desc_, [[Decorators]]: _decorators_}.</ins>
+      </emu-alg>
+      <emu-grammar>MethodDefinition : `set` PropertyName `(` PropertySetParameterList `)` `{` FunctionBody `}`</emu-grammar>
+      <emu-alg>
+        1. Let _propKey_ be the result of evaluating |PropertyName|.
+        1. ReturnIfAbrupt(_propKey_).
+        1. If the function code for this |MethodDefinition| is strict mode code, let _strict_ be *true*. Otherwise let _strict_ be *false*.
+        1. Let _scope_ be the running execution context's LexicalEnvironment.
+        1. Let _closure_ be FunctionCreate(~Method~, |PropertySetParameterList|, |FunctionBody|, _scope_, _strict_).
+        1. <del>Perform MakeMethod(_closure_, _object_).</del>
+        1. Perform SetFunctionName(_closure_, _propKey_, `"set"`).
+        1. <ins>Let _closure_ be MakeFunctionUninitialized(_closure_).</ins>
+        1. Let _desc_ be the PropertyDescriptor{[[Set]]: _closure_, [[Enumerable]]: _enumerable_, [[Configurable]]: *true*}.
+        1. <del>Return ? DefinePropertyOrThrow(_object_, _propKey_, _desc_).</del>
+        1. <ins>Return the Record{[[Key]]: _propKey_, [[Desc]]: _desc_, [[Decorators]]: _decorators_}.</ins>
+      </emu-alg>
+      <emu-grammar>GeneratorMethod : `*` PropertyName `(` StrictFormalParameters `)` `{` GeneratorBody `}`</emu-grammar>
+      <emu-alg>
+        1. Let _propKey_ be the result of evaluating |PropertyName|.
+        1. ReturnIfAbrupt(_propKey_).
+        1. If the function code for this |GeneratorMethod| is strict mode code, let _strict_ be *true*. Otherwise let _strict_ be *false*.
+        1. Let _scope_ be the running execution context's LexicalEnvironment.
+        1. Let _closure_ be GeneratorFunctionCreate(~Method~, |StrictFormalParameters|, |GeneratorBody|, _scope_, _strict_).
+        1. <del>Perform MakeMethod(_closure_, _object_).</del>
+        1. Let _prototype_ be ObjectCreate(%GeneratorPrototype%).
+        1. Perform DefinePropertyOrThrow(_closure_, `"prototype"`, PropertyDescriptor{[[Value]]: _prototype_, [[Writable]]: *true*, [[Enumerable]]: *false*, [[Configurable]]: *false*}).
+        1. Perform SetFunctionName(_closure_, _propKey_).
+        1. <ins>Let _closure_ be MakeFunctionUninitialized(_closure_).</ins>
+        1. Let _desc_ be the PropertyDescriptor{[[Value]]: _closure_, [[Writable]]: *true*, [[Enumerable]]: _enumerable_, [[Configurable]]: *true*}.
+        1. <del>Return ? DefinePropertyOrThrow(_object_, _propKey_, _desc_).</del>
+        1. <ins>Return the Record{[[Key]]: _propKey_, [[Desc]]: _desc_, [[Decorators]]: _decorators_}.</ins>
+      </emu-alg>
+    </emu-clause>
   </emu-clause>
 
   <emu-clause id="sec-new-semantics">
@@ -163,5 +293,60 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
         <p>The semantics of functions leaked to JavaScript during decoration was contentious in Munich. The exact semantics will be driven by implementation considerations.</p>
       </emu-note>
     </emu-clause>
+  <emu-clause id="sec-decorate-class">
+    <h1>DecorateClass</h1>
+    <p>With parameters _decorators_, _constructor_, _heritage_ and _elementDescriptors_.</p>
+    <emu-alg>
+      1. Let _elements_ be a new empty List.
+      1. Let _previousConstructor_ be _constructor_.
+      1. Let _previousDescriptors_ be _elementDescriptors_.
+      1. For each _decorator_ in _decorators_, in reverse list order do
+        1. Let _result_ be ? Call(_decorator_, *undefined*, « _previousConstructor_, _heritage_, _previousDescriptors_ »).
+        1. Let _previousConstructor_ be ? Get(_result_, `"constructor"`).
+        1. Let _elementsObject_ be ? Get(_result_, `"elements"`).
+        1. If _elementsObject_ is not *undefined*, then
+          1. Let _iterator_ be ? GetIterator(_extrasObject_).
+          1. Repeat
+            1. Let _next_ be ? IteratorStep(_iterator_).
+            1. If _next_ is *false*, then break.
+            1. Let _nextValue_ be ? IteratorValue(_next_).
+            1. Append _nextValue_ to the end of _elements_.
+      1. Let _elements_ be the result of merging any _elements_ with the same [[Key]] and [[Static]].
+      1. Return the Record {[[Constructor]]: _previousConstructor_, [[Elements]]: _elements_}.
+    </emu-alg>
+    <emu-note>
+      <p>There is a decision-point about what validation rules should be applied to the merging.</p>
+      <p>We also need to decide whether to produce an error if the returned constructor from a decorator has the wrong prototype. We think it
+      should be an error.</p>
+    </emu-note>
+  </emu-clause>
+
+  <emu-clause id="sec-from-element-descriptor">
+    <h1>FromElementDescriptor</h1>
+    <p>With parameter _element_.</p>
+    <emu-alg>
+      1. Let _obj_ be ObjectCreate(%ObjectPrototype%).
+      1. Perform CreateDataProperty(_obj_, `"kind"`, _element_.[[Kind]]).
+      1. Perform CreateDataProperty(_obj_, `"isStatic"`, _element_.[[Static]]).
+      1. Perform CreateDataProperty(_obj_, `"key"`, _element_.[[Key]]).
+      1. Perform CreateDataProperty(_obj_, `"descriptor"`, FromPropertyDescriptor(_element_.[[Descriptor]])).
+      1. Assert: All of the above CreateDataProperty operations return *true*.
+      1. Return _obj_.
+    </emu-alg>
+  </emu-clause>
+
+  <emu-clause id="sec-to-element-descriptor">
+    <h1>ToElementDescriptor</h1>
+    <p>With parameter _descriptor_.</p>
+    <emu-alg>
+      1. Let _kind_ be ? Get(_descriptor_, `"kind"`).
+      1. If _kind_ is not equal to the string value `"property"`, throw a TypeError exception.
+      1. Let _static_ be ToBoolean(? Get(_descriptor_, `"isStatic"`)).
+      1. Let _key_ be ? ToString(? Get(_descriptor_, `"key"`)).
+      1. Let _descriptor_ be ? ToPropertyDescriptor(? Get(_descriptor_, `"descriptor"`)).
+      1. Return the Record {[[Kind]]: _kind_, [[Static]]: _static_, [[Key]]: _key_, [[Descriptor]]: _descriptor_}.
+    </emu-alg>
+  </emu-clause>
+
   </emu-clause>
 </emu-clause>
