@@ -8,9 +8,78 @@ title: Decorators
 stage: 2
 contributors: Yehuda Katz, Brian Terlson, Ecma International
 </pre>
-<emu-intro>
+<emu-intro id="sec-intro">
   <h1>Introduction</h1>
-  <p>This is the most awesome decorator explainer imaginable.</p>
+  <p>Decorators offer a convenient declarative syntax to modify the shape of class declarations. This capability can be used for myriad purposes including modifying the descriptor of the declared member (@nonconfigurable/@enumerable), adding metadata (as used by Angular), and more.</p>
+
+  <emu-intro id="sec-intro-syntax">
+    <h1>Syntax</h1>
+
+    <p>As of this proposal, decorators can be attached to either classes or class members. An example of such a class might be:</p>
+    <pre><code class="javascript">
+      @autobind class Foo {
+        @configurable(false) @enumerable(true) method() {}
+      }
+    </code></pre>
+    <p>Prior to the `class` keyword and prior to method definitions are a new |DecoratorList| production - essentially, a list of |Decorator| productions. The |Decorator| production is `@` followed by a sequence of dotted identifiers (no `[]` access is allowed due to grammar difficulties) and an argument list. Thus, `@foo.bar()` is valid, while `@foo().bar()` is a syntax error.</p>
+    <emu-note>
+      <p>The syntax here can be pretty much anything, but this proposal takes a maximally conservative approach. Square brackets can be made unambiguous with a clever cover grammar but the syntax is confusing and error-prone.</p>
+    </emu-note>
+    <p>Elements of the |DecoratorList| are evaluated in-order but their resulting decorator functions are evaluated in a bottom-up fashion. Changes by a previous decorator are visible to subsequent decorators.</p>
+  </emu-intro>
+  <emu-intro id="sec-intro-decorator-functions">
+    <h1>Decorator Functions</h1>
+    <p>A <dfn>member decorator function</dfn> is a function which takes a member descriptor and which returns a member descriptor. A <dfn>member descriptor</dfn> is similar to a property descriptor and has the following shape:</p>
+    <pre><code class="typescript">
+      interface MemberDesciptor {
+        kind: "Property"
+        key: string,
+        isStatic: boolean,
+        descriptor: PropertyDescriptor,
+        extras?: MemberDescriptor[]
+      }
+    </code></pre>
+    <p>A <dfn>class decorator function</dfn> is a function which takes a constructor, heritage (parent class), and an array of MemberDescriptors that represent the instance and static members of the class.</p>
+
+    <pre><code>
+      function configurable(val) {
+        return function (member) {
+          member.descriptor.configurable = val;
+          return member;
+        }
+      }
+
+
+      class Foo {
+        @configurable(false)
+        bar(){};
+      }
+
+      Object.defineProperty(Foo.prototype, 'bar', { configurable: false});
+
+
+      function addMetadata(val) {
+        return function ({klass, parent, members}) {
+          members.push({
+            kind: 'Property',
+            key: '__metadata',
+            isStatic: true,
+            descriptor: {
+              value: val
+            }
+          });
+
+          return { klass, parent, members };
+        }
+      }
+
+      @addMetadata('hi')
+      class Foo {
+      }
+
+      Foo.__metadata = 'hi';
+    </code></pre>
+  </emu-intro>
 </emu-intro>
 
 <emu-clause id="sec-syntax">
@@ -347,7 +416,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
         <p>The semantics of functions leaked to JavaScript during decoration was contentious in Munich. The exact semantics will be driven by implementation considerations.</p>
       </emu-note>
     </emu-clause>
-    <emu-clause id="sec-decorate-element">
+    <emu-clause id="sec-decorate-element" aoid=DecorateElement>
       <h1>DecorateElement</h1>
       <p>With parameter _element_.</p>
       <emu-alg>
