@@ -32,15 +32,22 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
     <p>A <dfn>member decorator function</dfn> is a function which takes a member descriptor and which returns a member descriptor. A <dfn>member descriptor</dfn> is similar to a property descriptor and has the following shape:</p>
     <pre><code class="typescript">
       interface MemberDesciptor {
-        kind: "Property"
-        key: string,
-        isStatic: boolean,
-        descriptor: PropertyDescriptor,
-        extras?: MemberDescriptor[]
+        kind: "Property";
+        key: string;
+        isStatic: boolean;
+        descriptor: PropertyDescriptor;
+        extras?: MemberDescriptor[];
         finisher?: (klass): void;
       }
     </code></pre>
     <p>A <dfn>class decorator function</dfn> is a function which takes a constructor, heritage (parent class), and an array of MemberDescriptors that represent the instance and static members of the class.</p>
+    <pre><code class="typescript">
+      interface ClassDesciptor {
+        klass: Function;
+        parent: Function;
+        members: MemberDescriptor[];
+      }
+    </code></pre>
 
     <pre><code>
       function configurable(val) {
