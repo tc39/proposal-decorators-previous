@@ -32,7 +32,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
     <p>A <dfn>member decorator function</dfn> is a function which takes a member descriptor and which returns a member descriptor. A <dfn>member descriptor</dfn> is similar to a property descriptor and has the following shape:</p>
     <pre><code class="typescript">
       interface MemberDesciptor {
-        kind: "Property";
+        kind: "property";
         key: string;
         isStatic: boolean;
         descriptor: PropertyDescriptor;
