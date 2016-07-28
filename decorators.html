@@ -42,46 +42,6 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
     </code></pre>
     <p>A <dfn>class decorator function</dfn> is a function which takes a constructor, heritage (parent class), and an array of MemberDescriptors that represent the instance and static members of the class.</p>
 
-    <pre><code>
-      function configurable(val) {
-        return function (member) {
-          member.descriptor.configurable = val;
-          return member;
-        }
-      }
-
-
-      class Foo {
-        @configurable(false)
-        bar(){};
-      }
-
-      Object.defineProperty(Foo.prototype, 'bar', { configurable: false});
-
-
-      function addMetadata(val) {
-        return function ({klass, parent, members}) {
-          members.push({
-            kind: 'Property',
-            key: '__metadata',
-            isStatic: true,
-            descriptor: {
-              value: val
-            }
-          });
-
-          return { klass, parent, members };
-        }
-      }
-
-      @addMetadata('hi')
-      class Foo {
-      }
-
-      Foo.__metadata = 'hi';
-    </code></pre>
-
-    <h2>
     <p>There are a number of examples of real-world usage based on previous drafts of this proposal.</p>
 
     <p>The `core-decorators` library includes a number of standalone decorators that are intended to
