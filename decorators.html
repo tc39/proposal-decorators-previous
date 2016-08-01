@@ -40,7 +40,16 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
         finisher?: (klass): void;
       }
     </code></pre>
-    <p>A <dfn>class decorator function</dfn> is a function which takes a constructor, heritage (parent class), and an array of MemberDescriptors that represent the instance and static members of the class.</p>
+    <p>A <dfn>class decorator function</dfn> is a function which takes a class descriptor and which returns a class descriptor. A <dfn>class descriptor</dfn> has the following shape:</p>
+    <pre><code class="typescript">
+      interface ClassDescriptor {
+        kind: "Class";
+        constructor: function;
+        parent?: klass;
+        members: MemberDescriptor[];
+        finisher?: (klass): void;
+      }
+    </code></pre>
 
     <p>There are a number of examples of real-world usage based on previous drafts of this proposal.</p>
 
@@ -631,25 +640,29 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
       <h1>DecorateClass</h1>
       <p>With parameters _decorators_, _constructor_, _heritage_ and _elementDescriptors_.</p>
       <emu-alg>
-        1. Let _elements_ be a new empty List.
         1. Let _finishers_ be a new empty List.
         1. Let _previousConstructor_ be _constructor_.
         1. Let _previousDescriptors_ be _elementDescriptors_.
         1. For each _decorator_ in _decorators_, in reverse list order do
-          1. Let _result_ be ? Call(_decorator_, *undefined*, « _previousConstructor_, _heritage_, _previousDescriptors_ »).
+          1. Let _classDescriptor_ be ! ObjectCreate(%ObjectPrototype%).
+          1. Perform ! CreateDataPropertyOrThrow(_classDescriptor_, `"kind"`, `"Class"`).
+          1. Perform ! CreateDataPropertyOrThrow(_classDescriptor_, `"constructor"`, _previousConstructor_).
+          1. Perform ! CreateDataPropertyOrThrow(_classDescriptor_, `"parent"`, _heritage_).
+          1. Perform ! CreateDataPropertyOrThrow(_classDescriptor_, `"members"`, _previousDescriptors_).
+          1. Let _result_ be ? Call(_decorator_, *undefined*, « _classDescriptor_ »).
           1. Let _previousConstructor_ be ? Get(_result_, `"constructor"`).
           1. Let _finisher_ be ? Get(_result_, *"finisher"*).
           1. If _finisher_ is not *undefined*, then append _finisher_ to the end of _finishers_.
           1. Let _elementsObject_ be ? Get(_result_, `"elements"`).
           1. If _elementsObject_ is not *undefined*, then
+            1. Let _previousDescriptors_ be a new empty List.
             1. Let _iterator_ be ? GetIterator(_extrasObject_).
             1. Repeat
               1. Let _next_ be ? IteratorStep(_iterator_).
               1. If _next_ is *false*, then break.
               1. Let _nextValue_ be ? IteratorValue(_next_).
-              1. Append _nextValue_ to the end of _elements_.
-        1. Let _elements_ be the result of merging any _elements_ with the same [[Key]] and [[Static]].
-        1. Return the Record {[[Constructor]]: _previousConstructor_, [[Elements]]: _elements_, [[Finishers]]: _finishers_}.
+              1. Append _nextValue_ to the end of _previousDescriptors_.
+        1. Return the Record {[[Constructor]]: _previousConstructor_, [[Elements]]: _previousDescriptors_, [[Finishers]]: _finishers_}.
       </emu-alg>
       <emu-note>
         <p>There is a decision-point about what validation rules should be applied to the merging.</p>
