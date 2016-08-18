@@ -1,6 +1,6 @@
 # Call constructor proposal
 
-**Stage 1 Proposal**
+**Stage 2 Proposal**
 
 Champions:
   - Yehuda Katz
