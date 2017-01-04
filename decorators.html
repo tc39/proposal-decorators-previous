@@ -1,8 +1,6 @@
 <!doctype html>
 <meta charset="utf8">
-<link rel="stylesheet" href="ecmarkup.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
-<script src="ecmarkup.js"></script>
 <pre class=metadata>
 title: Decorators
 stage: 2
@@ -49,7 +47,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
 
     <p>A deprecation decorator:</p>
 
-    <pre><code>
+    <pre><code class="javascript">
       import { deprecate } from 'core-decorators';
 
       class Person {
@@ -80,7 +78,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
 
     <p>A throttling decorator:</p>
 
-    <pre><code>
+    <pre><code class="javascript">
       import { throttle } from 'core-decorators';
 
       class Editor {
@@ -96,7 +94,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
 
     <p>A mixin class decorator:</p>
 
-    <pre><code>
+    <pre><code class="javascript">
       import { mixin } from 'core-decorators';
 
       const SingerMixin = {
@@ -126,7 +124,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
 
     <p>A decorator that using `console.time` to time a function:</p>
 
-    <pre><code>
+    <pre><code class="javascript">
       class Bird {
         @time('sing')
         sing() {
@@ -145,7 +143,9 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
 
   <p>Aurelia:</p>
 
-  <code><pre>
+  <pre><code class="javascript">
+    var x = 1;
+
     import { computedFrom } from 'aurelia-framework';
 
     export class Welcome{
@@ -157,27 +157,27 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
         return `${this.firstName} ${this.lastName}`;
       }
     }
-  </pre></code>
+  </code></pre>
 
-  <code><pre>
+  <pre><code class="javascript">
     import { customElement } from 'aurelia-framework';
 
     @customElement('nav-bar')
     export class NavBar {}
-  </pre></code>
+  </code></pre>
 
-  <code><pre>
+  <pre><code class="javascript">
     @useShadowDOM
     @customElement('my-expander')
     export class Expander {
       @bindable isExpanded = false;
       @bindable header;
     }
-  </pre></code>
+  </code></pre>
 
   <p>Ember:</p>
 
-  <code><pre>
+  <pre><code class="javascript">
     import Ember from 'ember';
     import computed from 'ember-computed-decorators';
 
@@ -187,9 +187,9 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
         return `${first} ${last}`;
       }
     };
-  </pre></code>
+  </code></pre>
 
-  <code><pre>
+  <pre><code class="javascript">
     import Ember from 'ember';
     import computed, { readOnly } from 'ember-computed-decorators';
 
@@ -200,9 +200,9 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
         return `${first} ${last}`;
       }
     };
-  </pre></code>
+  </code></pre>
 
-  <pre><code>
+  <pre><code class="javascript">
     import DS from 'ember-data';
     import {
       attr,
@@ -215,7 +215,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
     };
   </code></pre>
 
-  <pre><code>
+  <pre><code class="javascript">
     import Ember from 'ember';
     import { alias } from 'ember-computed-decorators';
     export default class extends Ember.Component {
@@ -225,9 +225,9 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
 
       @alias('person.first') firstName
     };
-  </pre></code>
+  </code></pre>
 
-  <pre><code>
+  <pre><code class="javascript">
     import Ember from 'ember';
     import { intersect } from 'ember-computed-decorators';
 
@@ -241,7 +241,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
 
   <p>Angular (using TypeScript):</p>
 
-  <pre><code>
+  <pre><code class="typescript">
     @Component({
       selector: 'talk-cmp',
       directives: [FormattedRating, WatchButton, RateButton],
