@@ -6,6 +6,77 @@ title: Decorators
 stage: 2
 contributors: Yehuda Katz, Brian Terlson, Ecma International
 </pre>
+<style>
+emu-example figure {
+  align-items: initial;
+  width: 100%;
+}
+
+emu-note {
+  display: block;
+  border-left-color: #474747;
+}
+
+emu-note span.note {
+  display: inline-block;
+  color: #fff;
+  background-color: #474747;
+  width: initial;
+  padding-right: 50px;
+}
+
+emu-note div.note-contents {
+  padding-left: 5px;
+}
+
+emu-note[type=editor] {
+  border-left-color: #900;
+}
+emu-note[type=editor] span.note {
+  background-color: #900;
+}
+
+emu-example {
+  border-left: 5px solid #006387;
+  margin: 1em 0;
+}
+
+emu-example figure figcaption:first-child {
+  display: inline-block;
+  color: #fff;
+  background-color: #006387;
+  margin: 0;
+  padding: 0 50px 0 5px;
+  font-weight: normal;
+  text-transform: uppercase;
+  margin-left: -5px;
+}
+
+emu-example figure figcaption:nth-child(2) {
+  margin: 0;
+  padding: 0;
+  padding-left: 5px;
+  margin-left: -5px;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+emu-example p:nth-of-type(1) {
+  margin-top: 0;
+}
+
+emu-example figure {
+  padding-left: 5px;
+  display: block;
+  margin: 0;
+}
+
+emu-example pre {
+  margin: 0;
+}
+</style>
+
 <emu-intro id=sec-intro>
   <h1>Introduction</h1>
   <p>Decorators offer a convenient declarative syntax to modify the shape of class declarations. This capability can be used for myriad purposes including modifying the descriptor of the declared member (@nonconfigurable/@enumerable), adding metadata (as used by Angular), and more.</p>
@@ -14,21 +85,25 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
     <h1>Syntax</h1>
 
     <p>As of this proposal, decorators can be attached to either classes or class members. An example of such a class might be:</p>
-    <pre><code id=javascript>
-      @frozen class Foo {
-        @configurable(false) @enumerable(true) method() {}
-      }
-    </code></pre>
+
+    <emu-example id="example-class-decorators">
+      <pre><code class=javascript>
+        @frozen class Foo {
+          @configurable(false) @enumerable(true) method() {}
+        }
+      </code></pre>
+    </emu-example>
+
     <p>Prior to the `class` keyword and prior to method definitions are a new |DecoratorList| production - essentially, a list of |Decorator| productions. The |Decorator| production is `@` followed by a sequence of dotted identifiers (no `[]` access is allowed due to grammar difficulties) and an argument list. Thus, `@foo.bar()` is valid, while `@foo().bar()` (and `@foo[bar]`) are syntax errors.</p>
-    <emu-note>
+    <emu-note type=editor>
       <p>The syntax here can be pretty much anything, but this proposal takes a maximally conservative approach. Square brackets can be made unambiguous with a clever cover grammar but the syntax is confusing and error-prone.</p>
     </emu-note>
     <p>Elements of the |DecoratorList| are evaluated in-order but their resulting decorator functions are evaluated in a bottom-up fashion. The value returned by a decorator becomes the input of the next decorator.</p>
   </emu-intro>
   <emu-intro id=sec-intro-decorator-functions>
     <h1>Decorator Functions</h1>
-    <p>A <dfn>member decorator function</dfn> is a function which takes a member descriptor and which returns a member descriptor. A <dfn>member descriptor</dfn> is similar to a property descriptor and has the following shape:</p>
-    <pre><code id=typescript>
+    <p>A <dfn id=member-decorator-function>member decorator function</dfn> is a function which takes a member descriptor and which returns a member descriptor. A <dfn>member descriptor</dfn> is similar to a property descriptor and has the following shape:</p>
+    <pre><code class=typescript>
       interface MemberDesciptor {
         kind: "Property"
         key: string,
@@ -38,221 +113,237 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
         finisher?: (klass): void;
       }
     </code></pre>
-    <p>A <dfn>class decorator function</dfn> is a function which takes a constructor, heritage (parent class), and an array of MemberDescriptors that represent the instance and static members of the class.</p>
+    <p>A <dfn id=class-decorator-function>class decorator function</dfn> is a function which takes a constructor, heritage (parent class), and an array of MemberDescriptors that represent the instance and static members of the class.</p>
 
     <p>There are a number of examples of real-world usage based on previous drafts of this proposal.</p>
 
-    <p>The `core-decorators` library includes a number of standalone decorators that are intended to
-      work in vanilla JavaScript code</p>
+    <emu-example id="example-core-decorators">
+      <p>The `core-decorators` library includes a number of standalone decorators that are intended to
+      work in vanilla JavaScript code.</p>
+      <p>An @deprecate decorator:</p>
+      <pre><code class=javascript>
+        import { deprecate } from 'core-decorators';
 
-    <p>A deprecation decorator:</p>
+        class Person {
+          @deprecate
+          facepalm() {}
 
-    <pre><code id=javascript>
-      import { deprecate } from 'core-decorators';
+          @deprecate('We stopped facepalming')
+          facepalmHard() {}
 
-      class Person {
-        @deprecate
-        facepalm() {}
-
-        @deprecate('We stopped facepalming')
-        facepalmHard() {}
-
-        @deprecate('We stopped facepalming', { url: 'http://knowyourmeme.com/memes/facepalm' })
-        facepalmHarder() {}
-      }
-
-      let person = new Person();
-
-      person.facepalm();
-      // DEPRECATION Person#facepalm: This function will be removed in future versions.
-
-      person.facepalmHard();
-      // DEPRECATION Person#facepalmHard: We stopped facepalming
-
-      person.facepalmHarder();
-      // DEPRECATION Person#facepalmHarder: We stopped facepalming
-      //
-      //     See http://knowyourmeme.com/memes/facepalm for more details.
-      //
-    </code></pre>
-
-    <p>A throttling decorator:</p>
-
-    <pre><code id=javascript>
-      import { throttle } from 'core-decorators';
-
-      class Editor {
-
-        content = '';
-
-        @throttle(500, { leading: false })
-        updateContent(content) {
-          this.content = content;
+          @deprecate('We stopped facepalming', { url: 'http://knowyourmeme.com/memes/facepalm' })
+          facepalmHarder() {}
         }
-      }
-    </code></pre>
 
-    <p>A mixin class decorator:</p>
+        let person = new Person();
 
-    <pre><code id=javascript>
-      import { mixin } from 'core-decorators';
+        person.facepalm();
+        // DEPRECATION Person#facepalm: This function will be removed in future versions.
 
-      const SingerMixin = {
-        sing(sound) {
-          alert(sound);
+        person.facepalmHard();
+        // DEPRECATION Person#facepalmHard: We stopped facepalming
+
+        person.facepalmHarder();
+        // DEPRECATION Person#facepalmHarder: We stopped facepalming
+        //
+        //     See http://knowyourmeme.com/memes/facepalm for more details.
+        //
+      </code></pre>
+      <p>A throttling decorator:</p>
+      <pre><code class=javascript>
+        import { throttle } from 'core-decorators';
+
+        class Editor {
+
+          content = '';
+
+          @throttle(500, { leading: false })
+          updateContent(content) {
+            this.content = content;
+          }
         }
-      };
+      </code></pre>
 
-      const FlyMixin = {
-        // All types of property descriptors are supported
-        get speed() {},
-        fly() {},
-        land() {}
-      };
+      <p>A mixin class decorator:</p>
 
-      @mixin(SingerMixin, FlyMixin)
-      class Bird {
-        singMatingCall() {
-          this.sing('tweet tweet');
+      <pre><code class=javascript>
+        import { mixin } from 'core-decorators';
+
+        const SingerMixin = {
+          sing(sound) {
+            alert(sound);
+          }
+        };
+
+        const FlyMixin = {
+          // All types of property descriptors are supported
+          get speed() {},
+          fly() {},
+          land() {}
+        };
+
+        @mixin(SingerMixin, FlyMixin)
+        class Bird {
+          singMatingCall() {
+            this.sing('tweet tweet');
+          }
         }
-      }
 
-      var bird = new Bird();
-      bird.singMatingCall();
-      // alerts "tweet tweet"
-    </code></pre>
+        var bird = new Bird();
+        bird.singMatingCall();
+        // alerts "tweet tweet"
+      </code></pre>
 
-    <p>A decorator that using `console.time` to time a function:</p>
+      <p>A decorator using `console.time` to time a function:</p>
 
-    <pre><code id=javascript>
-      class Bird {
-        @time('sing')
-        sing() {
+      <pre><code class=javascript>
+        class Bird {
+          @time('sing')
+          sing() {
+          }
         }
-      }
 
-      var bird = new Bird();
-      bird.sing(); // console.time label will be 'sing-0'
-      bird.sing(); // console.time label will be 'sing-1'
-    </code></pre>
+        var bird = new Bird();
+        bird.sing(); // console.time label will be 'sing-0'
+        bird.sing(); // console.time label will be 'sing-1'
+      </code></pre>
+    </emu-example>
   </emu-intro>
+  <emu-intro id=sec-intro-frameworks>
+    <h1>Frameworks</h1>
 
-  <h2>Frameworks</h2>
+    <p>Several frameworks have also adopted decorators in various forms.</p>
 
-  <p>Several frameworks have also adopted decorators in various forms.</p>
+    <emu-example id=example-aurelia-computedFrom>
+      <figcaption><a href="http://aurelia.io/">Aurelia</a> @computedFrom decorator</figcaption>
+      <pre><code class=javascript>
+        var x = 1;
 
-  <p>Aurelia:</p>
+        import { computedFrom } from 'aurelia-framework';
 
-  <pre><code id=javascript>
-    var x = 1;
+        export class Welcome{
+          firstName = 'John';
+          lastName = 'Doe';
 
-    import { computedFrom } from 'aurelia-framework';
+          @computedFrom('firstName', 'lastName')
+          get fullName(){
+            return `${this.firstName} ${this.lastName}`;
+          }
+        }
+      </code></pre>
+    </emu-example>
 
-    export class Welcome{
-      firstName = 'John';
-      lastName = 'Doe';
 
-      @computedFrom('firstName', 'lastName')
-      get fullName(){
-        return `${this.firstName} ${this.lastName}`;
-      }
-    }
-  </code></pre>
+    <emu-example id=example-aurelia-customElement>
+      <figcaption><a href="http://aurelia.io/">Aurelia</a> @customElement, @useShadowDOM, and @bindable decorators</figcaption>
+      <pre><code class=javascript>
+        import { customElement, useShadowDOM, bindable } from 'aurelia-framework';
 
-  <pre><code id=javascript>
-    import { customElement } from 'aurelia-framework';
+        @customElement('nav-bar')
+        export class NavBar {}
 
-    @customElement('nav-bar')
-    export class NavBar {}
-  </code></pre>
+        @useShadowDOM
+        @customElement('my-expander')
+        export class Expander {
+          @bindable isExpanded = false;
+          @bindable header;
+        }
+      </code></pre>
+    </emu-example>
 
-  <pre><code id=javascript>
-    @useShadowDOM
-    @customElement('my-expander')
-    export class Expander {
-      @bindable isExpanded = false;
-      @bindable header;
-    }
-  </code></pre>
+    <emu-example id=example-ember-computed>
+      <figcaption><a href="http://emberjs.com/">Ember</a> @computed decorator</figcaption>
+      <pre><code class=javascript>
+        import Ember from 'ember';
+        import computed from 'ember-computed-decorators';
 
-  <p>Ember:</p>
+        export default class extends Ember.Component {
+          @computed('first', 'last')
+          name(first, last) {
+            return `${first} ${last}`;
+          }
+        };
+      </code></pre>
+    </emu-example>
 
-  <pre><code id=javascript>
-    import Ember from 'ember';
-    import computed from 'ember-computed-decorators';
+    <emu-example id=example-ember-readOnly>
+      <figcaption><a href="http://emberjs.com/">Ember</a> @readOnly decorator</figcaption>
+      <pre><code class=javascript>
+        import Ember from 'ember';
+        import computed, { readOnly } from 'ember-computed-decorators';
 
-    export default class extends Ember.Component {
-      @computed('first', 'last')
-      name(first, last) {
-        return `${first} ${last}`;
-      }
-    };
-  </code></pre>
+        export default class extends Ember.Component {
+          @readOnly
+          @computed('first', 'last')
+          name(first, last) {
+            return `${first} ${last}`;
+          }
+        };
+      </code></pre>
+    </emu-example>
 
-  <pre><code id=javascript>
-    import Ember from 'ember';
-    import computed, { readOnly } from 'ember-computed-decorators';
+    <emu-example id=example-ember-data>
+      <figcaption><a href="https://github.com/emberjs/data">Ember Data</a> entity relationship decorators</figcaption>
+      <pre><code class=javascript>
+        import DS from 'ember-data';
+        import {
+          attr,
+          hasMany
+        } from "ember-computed-decorators/ember-data";
 
-    export default class extends Ember.Component {
-      @readOnly
-      @computed('first', 'last')
-      name(first, last) {
-        return `${first} ${last}`;
-      }
-    };
-  </code></pre>
+        export default class extends DS.Model {
+          @attr firstName,
+          @hasMany users
+        };
+      </code></pre>
+    </emu-example>
 
-  <pre><code id=javascript>
-    import DS from 'ember-data';
-    import {
-      attr,
-      hasMany
-    } from "ember-computed-decorators/ember-data";
+    <emu-example id=example-ember-alias>
+      <figcaption><a href="http://emberjs.com/">Ember</a> @alias decorator</figcaption>
+      <pre><code class=javascript>
+        import Ember from 'ember';
+        import { alias } from 'ember-computed-decorators';
+        export default class extends Ember.Component {
+          person: {
+            first: 'Joe'
+          }
 
-    export default class extends DS.Model {
-      @attr firstName,
-      @hasMany users
-    };
-  </code></pre>
+          @alias('person.first') firstName
+        };
+      </code></pre>
+    </emu-example>
 
-  <pre><code id=javascript>
-    import Ember from 'ember';
-    import { alias } from 'ember-computed-decorators';
-    export default class extends Ember.Component {
-      person: {
-        first: 'Joe'
-      }
+    <emu-example id=example-ember-intersect>
+      <figcaption><a href="http://emberjs.com/">Ember</a> @intersect decorator</figcaption>
+      <pre><code class=javascript>
+        import Ember from 'ember';
+        import { intersect } from 'ember-computed-decorators';
 
-      @alias('person.first') firstName
-    };
-  </code></pre>
+        export default class extends Ember.Component {
+          likes = [ 'tacos', 'puppies', 'pizza' ];
+          foods = [ 'tacos', 'pizza' ];
 
-  <pre><code id=javascript>
-    import Ember from 'ember';
-    import { intersect } from 'ember-computed-decorators';
+          @intersect('likes', 'foods') favoriteFoods; // ['tacos', 'pizza']
+        };
+      </code></pre>
+    </emu-example>
 
-    export default class extends Ember.Component {
-      likes = [ 'tacos', 'puppies', 'pizza' ];
-      foods = [ 'tacos', 'pizza' ];
-
-      @intersect('likes', 'foods') favoriteFoods; // ['tacos', 'pizza']
-    };
-  </code></pre>
-
-  <p>Angular (using TypeScript):</p>
-
-  <pre><code id=typescript>
-    @Component({
-      selector: 'talk-cmp',
-      directives: [FormattedRating, WatchButton, RateButton],
-      templateUrl: 'talk_cmp.html'
-    })
-    class TalkCmp {
-      @Input() talk: Talk;
-      @Output() rate: EventEmitter;
-      // ...
-    }
-  </code></pre>
+    <emu-example id=example-ember-readOnly>
+      <figcaption><a href="http://angularjs.org/">Angular</a> &amp; <a href="http://typescriptlang.com">TypeScript</a></figcaption>
+      <pre><code class=typescript>
+        @Component({
+          selector: 'talk-cmp',
+          directives: [FormattedRating, WatchButton, RateButton],
+          templateUrl: 'talk_cmp.html'
+        })
+        class TalkCmp {
+          @Input() talk: Talk;
+          @Output() rate: EventEmitter;
+          // ...
+        }
+      </code></pre>
+    </emu-example>
+  </emu-intro>
 </emu-intro>
 
 <emu-clause id=sec-syntax>
@@ -368,11 +459,11 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
         1. If _constructor_ is ~empty~, then
           1. If |ClassHeritage_opt| is present and _protoParent_ is not *null*, then
             1. Let _constructor_ be the result of parsing the source text
-              <pre><code id=javascript>constructor(... args){ super (...args);}</code></pre>
+              <pre><code class=javascript>constructor(... args){ super (...args);}</code></pre>
               using the syntactic grammar with the goal symbol |MethodDefinition[~Yield]|.
           1. Else,
             1. Let _constructor_ be the result of parsing the source text
-              <pre><code id=javascript>constructor( ){ }</code></pre>
+              <pre><code class=javascript>constructor( ){ }</code></pre>
               using the syntactic grammar with the goal symbol |MethodDefinition[~Yield]|.
         1. Set the running execution context's LexicalEnvironment to _classScope_.
         1. <del>Let _constructorInfo_ be the result of performing DefineMethod for _constructor_ with arguments _proto_ and _constructorParent_ as the optional _functionPrototype_ argument.</del>
@@ -442,7 +533,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
           1. <ins>Perform ? Call(_finisher_, *undefined*, « _constructor »).</ins>
         1. Return <del>_F_</del><ins>_constructor_</ins>.
       </emu-alg>
-      <emu-note>
+      <emu-note type=editor>
         <p>We need to make a decision about what validations we need on the _extras_ list, and when to apply it.</p>
         <p>At minimum, if one decorator marks a property as non-configurable, another decorator will not be allowed to modify it.</p>
         <p>There are several options:</p>
@@ -463,7 +554,9 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
     <emu-clause id=sec-method-definitions-runtime-semantics-propertydefinitionevaluation>
       <h1>Runtime Semantics: PropertyDefinitionEvaluation</h1>
       <p>With parameters _object_ and _enumerable_.</p>
-      <emu-note><p>The modifications to PropertyDefinitionEvaluation delays actually building the object by returning a record instead of doing the DefineProperty at this point. We also make any closures uninitialized.</p></emu-note>
+      <emu-note>
+        The modifications to PropertyDefinitionEvaluation delays actually building the object by returning a record instead of doing the DefineProperty at this point. We also make any closures uninitialized.
+      </emu-note>
       <emu-see-also-para op="PropertyDefinitionEvaluation"></emu-see-also-para>
       <emu-grammar>MethodDefinition : PropertyName `(` StrictFormalParameters `)` `{` FunctionBody `}`</emu-grammar>
       <emu-alg>
@@ -557,7 +650,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
     <emu-clause id=sec-runtime-semantics-makefunctionuninitialized>
       <h1>Runtime Semantics: MakeFunctionUninitialized</h1>
       <p>With parameter _function_.</p>
-      <emu-note>
+      <emu-note type=editor>
         <p>The semantics of functions leaked to JavaScript during decoration was contentious in Munich. The exact semantics will be driven by implementation considerations.</p>
       </emu-note>
     </emu-clause>
@@ -565,7 +658,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
     <emu-clause id=sec-runtime-semantics-makefunctioninitialized>
       <h1>Runtime Semantics: MakeFunctionInitialized</h1>
       <p>With parameter _function_.</p>
-      <emu-note>
+      <emu-note type=editor>
         <p>The semantics of functions leaked to JavaScript during decoration was contentious in Munich. The exact semantics will be driven by implementation considerations.</p>
       </emu-note>
     </emu-clause>
@@ -573,7 +666,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
     <emu-clause id=sec-runtime-semantics-makefunctioninitialized>
       <h1>Runtime Semantics: IsUninitializedFunction</h1>
       <p>With parameter _function_.</p>
-      <emu-note>
+      <emu-note type=editor>
         <p>The semantics of functions leaked to JavaScript during decoration was contentious in Munich. The exact semantics will be driven by implementation considerations.</p>
       </emu-note>
     </emu-clause>
@@ -587,7 +680,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
           1. If _desc_ has a [[Set]] field, MakeFunctionInitialized(_desc_.[[Set]]).
           1. If _desc_ has a [[Get]] field, MakeFunctionInitialized(_desc_.[[Get]]).
           1. If _desc_ has a [[Value]] field, and IsUninitializedFunction(_desc_.[[Value]]) is *true*, MakeFunctionInitialized(_desc_.[[Value]]).
-      </emu-alg>
+      </emu-alg type=editor>
       <emu-note>
         <p>The semantics of functions leaked to JavaScript during decoration was contentious in Munich. The exact semantics will be driven by implementation considerations.</p>
       </emu-note>
@@ -623,7 +716,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
       <emu-note>
         <p>Future versions of the spec will create element descriptors with other [[Kind]]s.</p>
       </emu-note>
-      <emu-note>
+      <emu-note type=editor>
         <p>There is a decision-point about what validation rules should be applied to the merging that happens right before merging.</p>
       </emu-note>
     </emu-clause>
@@ -651,7 +744,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
         1. Let _elements_ be the result of merging any _elements_ with the same [[Key]] and [[Static]].
         1. Return the Record {[[Constructor]]: _previousConstructor_, [[Elements]]: _elements_, [[Finishers]]: _finishers_}.
       </emu-alg>
-      <emu-note>
+      <emu-note type=editor>
         <p>There is a decision-point about what validation rules should be applied to the merging.</p>
         <p>We also need to decide whether to produce an error if the returned constructor from a decorator has the wrong prototype. We think it
         should be an error.</p>
@@ -687,7 +780,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
         1. Else, let _finisher_ be *undefined*.
         1. Return the Record {[[Kind]]: _kind_, [[Static]]: _static_, [[Key]]: _key_, [[Descriptor]]: _descriptor_, [[Finisher]]: _finisher_}.
       </emu-alg>
-      <emu-note>
+      <emu-note type=editor>
         <p>Todo: Should probably add validations for having kind, static, and key fields.</p>
       </emu-note>
     </emu-clause>
