@@ -6,15 +6,15 @@ title: Decorators
 stage: 2
 contributors: Yehuda Katz, Brian Terlson, Ecma International
 </pre>
-<emu-intro id="sec-intro">
+<emu-intro id=sec-intro>
   <h1>Introduction</h1>
   <p>Decorators offer a convenient declarative syntax to modify the shape of class declarations. This capability can be used for myriad purposes including modifying the descriptor of the declared member (@nonconfigurable/@enumerable), adding metadata (as used by Angular), and more.</p>
 
-  <emu-intro id="sec-intro-syntax">
+  <emu-intro id=sec-intro-syntax>
     <h1>Syntax</h1>
 
     <p>As of this proposal, decorators can be attached to either classes or class members. An example of such a class might be:</p>
-    <pre><code class="javascript">
+    <pre><code id=javascript>
       @frozen class Foo {
         @configurable(false) @enumerable(true) method() {}
       }
@@ -25,10 +25,10 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
     </emu-note>
     <p>Elements of the |DecoratorList| are evaluated in-order but their resulting decorator functions are evaluated in a bottom-up fashion. The value returned by a decorator becomes the input of the next decorator.</p>
   </emu-intro>
-  <emu-intro id="sec-intro-decorator-functions">
+  <emu-intro id=sec-intro-decorator-functions>
     <h1>Decorator Functions</h1>
     <p>A <dfn>member decorator function</dfn> is a function which takes a member descriptor and which returns a member descriptor. A <dfn>member descriptor</dfn> is similar to a property descriptor and has the following shape:</p>
-    <pre><code class="typescript">
+    <pre><code id=typescript>
       interface MemberDesciptor {
         kind: "Property"
         key: string,
@@ -47,7 +47,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
 
     <p>A deprecation decorator:</p>
 
-    <pre><code class="javascript">
+    <pre><code id=javascript>
       import { deprecate } from 'core-decorators';
 
       class Person {
@@ -78,7 +78,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
 
     <p>A throttling decorator:</p>
 
-    <pre><code class="javascript">
+    <pre><code id=javascript>
       import { throttle } from 'core-decorators';
 
       class Editor {
@@ -94,7 +94,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
 
     <p>A mixin class decorator:</p>
 
-    <pre><code class="javascript">
+    <pre><code id=javascript>
       import { mixin } from 'core-decorators';
 
       const SingerMixin = {
@@ -124,7 +124,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
 
     <p>A decorator that using `console.time` to time a function:</p>
 
-    <pre><code class="javascript">
+    <pre><code id=javascript>
       class Bird {
         @time('sing')
         sing() {
@@ -143,7 +143,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
 
   <p>Aurelia:</p>
 
-  <pre><code class="javascript">
+  <pre><code id=javascript>
     var x = 1;
 
     import { computedFrom } from 'aurelia-framework';
@@ -159,14 +159,14 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
     }
   </code></pre>
 
-  <pre><code class="javascript">
+  <pre><code id=javascript>
     import { customElement } from 'aurelia-framework';
 
     @customElement('nav-bar')
     export class NavBar {}
   </code></pre>
 
-  <pre><code class="javascript">
+  <pre><code id=javascript>
     @useShadowDOM
     @customElement('my-expander')
     export class Expander {
@@ -177,7 +177,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
 
   <p>Ember:</p>
 
-  <pre><code class="javascript">
+  <pre><code id=javascript>
     import Ember from 'ember';
     import computed from 'ember-computed-decorators';
 
@@ -189,7 +189,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
     };
   </code></pre>
 
-  <pre><code class="javascript">
+  <pre><code id=javascript>
     import Ember from 'ember';
     import computed, { readOnly } from 'ember-computed-decorators';
 
@@ -202,7 +202,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
     };
   </code></pre>
 
-  <pre><code class="javascript">
+  <pre><code id=javascript>
     import DS from 'ember-data';
     import {
       attr,
@@ -215,7 +215,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
     };
   </code></pre>
 
-  <pre><code class="javascript">
+  <pre><code id=javascript>
     import Ember from 'ember';
     import { alias } from 'ember-computed-decorators';
     export default class extends Ember.Component {
@@ -227,7 +227,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
     };
   </code></pre>
 
-  <pre><code class="javascript">
+  <pre><code id=javascript>
     import Ember from 'ember';
     import { intersect } from 'ember-computed-decorators';
 
@@ -241,7 +241,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
 
   <p>Angular (using TypeScript):</p>
 
-  <pre><code class="typescript">
+  <pre><code id=typescript>
     @Component({
       selector: 'talk-cmp',
       directives: [FormattedRating, WatchButton, RateButton],
@@ -255,10 +255,10 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
   </code></pre>
 </emu-intro>
 
-<emu-clause id="sec-syntax">
+<emu-clause id=sec-syntax>
   <h1>Syntax</h1>
 
-  <emu-clause id="sec-new-syntax">
+  <emu-clause id=sec-new-syntax>
     <h1>New Productions</h1>
 
     <emu-grammar>
@@ -278,7 +278,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
     </emu-grammar>
   </emu-clause>
 
-  <emu-clause id="sec-updated-syntax">
+  <emu-clause id=sec-updated-syntax>
     <h1>Updated Productions</h1>
 
     <p><emu-grammar>PropertyDefinition : MethodDefinition</emu-grammar> gets an optional |DecoratorList|.</p>
@@ -312,13 +312,13 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
   </emu-clause>
 </emu-clause>
 
-<emu-clause id="sec-semantics">
+<emu-clause id=sec-semantics>
   <h1>Semantics</h1>
 
-  <emu-clause id="sec-updated-semantics">
+  <emu-clause id=sec-updated-semantics>
     <h1>Updated Operations</h1>
 
-    <emu-clause id="sec-runtime-semantics-definemethod">
+    <emu-clause id=sec-runtime-semantics-definemethod>
       <h1>Runtime Semantics: DefineMethod</h1>
       <p>With <del>parameters _object_ and</del> optional parameter _functionPrototype_.</p>
       <emu-grammar>MethodDefinition : PropertyName `(` StrictFormalParameters `)` `{` FunctionBody `}`</emu-grammar>
@@ -336,7 +336,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
       </emu-alg>
     </emu-clause>
 
-    <emu-clause id="sec-runtime-semantics-classdefinitionevaluation">
+    <emu-clause id=sec-runtime-semantics-classdefinitionevaluation>
       <h1>Runtime Semantics: ClassDefinitionEvaluation</h1>
       <p>With parameter _className_.</p>
       <emu-grammar>ClassTail : ClassHeritage? `{` ClassBody? `}`</emu-grammar>
@@ -368,11 +368,11 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
         1. If _constructor_ is ~empty~, then
           1. If |ClassHeritage_opt| is present and _protoParent_ is not *null*, then
             1. Let _constructor_ be the result of parsing the source text
-              <pre><code class="javascript">constructor(... args){ super (...args);}</code></pre>
+              <pre><code id=javascript>constructor(... args){ super (...args);}</code></pre>
               using the syntactic grammar with the goal symbol |MethodDefinition[~Yield]|.
           1. Else,
             1. Let _constructor_ be the result of parsing the source text
-              <pre><code class="javascript">constructor( ){ }</code></pre>
+              <pre><code id=javascript>constructor( ){ }</code></pre>
               using the syntactic grammar with the goal symbol |MethodDefinition[~Yield]|.
         1. Set the running execution context's LexicalEnvironment to _classScope_.
         1. <del>Let _constructorInfo_ be the result of performing DefineMethod for _constructor_ with arguments _proto_ and _constructorParent_ as the optional _functionPrototype_ argument.</del>
@@ -460,7 +460,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
       </emu-note>
     </emu-clause>
 
-    <emu-clause id="sec-method-definitions-runtime-semantics-propertydefinitionevaluation">
+    <emu-clause id=sec-method-definitions-runtime-semantics-propertydefinitionevaluation>
       <h1>Runtime Semantics: PropertyDefinitionEvaluation</h1>
       <p>With parameters _object_ and _enumerable_.</p>
       <emu-note><p>The modifications to PropertyDefinitionEvaluation delays actually building the object by returning a record instead of doing the DefineProperty at this point. We also make any closures uninitialized.</p></emu-note>
@@ -524,9 +524,9 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
     </emu-clause>
   </emu-clause>
 
-  <emu-clause id="sec-new-semantics">
+  <emu-clause id=sec-new-semantics>
     <h1>New Operations</h1>
-    <emu-clause id="sec-decorator-runtime-semantics-decoratorevaluation">
+    <emu-clause id=sec-decorator-runtime-semantics-decoratorevaluation>
       <h1>Runtime Semantics: DecoratorEvaluation</h1>
       <emu-grammar>Decorator : `@` DecoratorMemberExpression[?Yield]</emu-grammar>
       <emu-alg>
@@ -542,7 +542,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
       </emu-alg>
     </emu-clause>
 
-    <emu-clause id="sec-method-definitions-runtime-semantics-decoratorlistevaluation">
+    <emu-clause id=sec-method-definitions-runtime-semantics-decoratorlistevaluation>
       <h1>Runtime Semantics: DecoratorListEvaluation</h1>
       <emu-grammar>DecoratorList : DecoratorList[?Yield]? Decorator[?Yield]</emu-grammar>
       <emu-alg>
@@ -554,7 +554,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
       </emu-alg>
     </emu-clause>
 
-    <emu-clause id="sec-runtime-semantics-makefunctionuninitialized">
+    <emu-clause id=sec-runtime-semantics-makefunctionuninitialized>
       <h1>Runtime Semantics: MakeFunctionUninitialized</h1>
       <p>With parameter _function_.</p>
       <emu-note>
@@ -562,7 +562,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
       </emu-note>
     </emu-clause>
 
-    <emu-clause id="sec-runtime-semantics-makefunctioninitialized">
+    <emu-clause id=sec-runtime-semantics-makefunctioninitialized>
       <h1>Runtime Semantics: MakeFunctionInitialized</h1>
       <p>With parameter _function_.</p>
       <emu-note>
@@ -570,7 +570,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
       </emu-note>
     </emu-clause>
 
-    <emu-clause id="sec-runtime-semantics-makefunctioninitialized">
+    <emu-clause id=sec-runtime-semantics-makefunctioninitialized>
       <h1>Runtime Semantics: IsUninitializedFunction</h1>
       <p>With parameter _function_.</p>
       <emu-note>
@@ -578,7 +578,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
       </emu-note>
     </emu-clause>
 
-    <emu-clause id="sec-runtime-semantics-makeclasselementsinitialized">
+    <emu-clause id=sec-runtime-semantics-makeclasselementsinitialized>
       <h1>Runtime Semantics: MakeClassElementsInitialized</h1>
       <p>With parameter _elements_.</p>
       <emu-alg>
@@ -592,7 +592,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
         <p>The semantics of functions leaked to JavaScript during decoration was contentious in Munich. The exact semantics will be driven by implementation considerations.</p>
       </emu-note>
     </emu-clause>
-    <emu-clause id="sec-decorate-element" aoid=DecorateElement>
+    <emu-clause id=sec-decorate-element aoid=DecorateElement>
       <h1>DecorateElement</h1>
       <p>With parameter _element_.</p>
       <emu-alg>
@@ -627,7 +627,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
         <p>There is a decision-point about what validation rules should be applied to the merging that happens right before merging.</p>
       </emu-note>
     </emu-clause>
-    <emu-clause id="sec-decorate-class">
+    <emu-clause id=sec-decorate-class>
       <h1>DecorateClass</h1>
       <p>With parameters _decorators_, _constructor_, _heritage_ and _elementDescriptors_.</p>
       <emu-alg>
@@ -658,7 +658,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
       </emu-note>
     </emu-clause>
 
-    <emu-clause id="sec-from-element-descriptor">
+    <emu-clause id=sec-from-element-descriptor>
       <h1>FromElementDescriptor</h1>
       <p>With parameter _element_.</p>
       <emu-alg>
@@ -673,7 +673,7 @@ contributors: Yehuda Katz, Brian Terlson, Ecma International
       </emu-alg>
     </emu-clause>
 
-    <emu-clause id="sec-to-element-descriptor">
+    <emu-clause id=sec-to-element-descriptor>
       <h1>ToElementDescriptor</h1>
       <p>With parameter _descriptor_.</p>
       <emu-alg>
