@@ -1,8 +1,6 @@
 <!doctype html>
 <head><meta charset="utf-8">
-<link rel="stylesheet" href="ecmarkup.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
-<script src="ecmarkup.js"></script>
 <title>Decorators</title><script type="application/json" id="menu-search-biblio">[{"type":"clause","id":"sec-intro-syntax","aoid":null,"title":"Syntax","titleHTML":"Syntax","number":"","namespace":"<no location>","location":"","referencingIds":[],"key":"Syntax"},{"type":"term","term":"member decorator function","refId":"sec-intro-decorator-functions","referencingIds":[],"namespace":"<no location>","location":"","key":"member decorator function"},{"type":"term","term":"member descriptor","refId":"sec-intro-decorator-functions","referencingIds":[],"namespace":"<no location>","location":"","key":"member descriptor"},{"type":"term","term":"class decorator function","refId":"sec-intro-decorator-functions","referencingIds":[],"namespace":"<no location>","location":"","key":"class decorator function"},{"type":"clause","id":"sec-intro-decorator-functions","aoid":null,"title":"Decorator Functions","titleHTML":"Decorator Functions","number":"","namespace":"<no location>","location":"","referencingIds":[],"key":"Decorator Functions"},{"type":"clause","id":"sec-intro","aoid":null,"title":"Introduction","titleHTML":"Introduction","number":"","namespace":"<no location>","location":"","referencingIds":[],"key":"Introduction"},{"type":"production","id":"prod-DecoratorList","name":"DecoratorList","referencingIds":["_ref_75","_ref_78","_ref_79","_ref_86","_ref_87","_ref_91","_ref_92","_ref_94","_ref_97","_ref_98","_ref_102","_ref_103","_ref_105","_ref_111","_ref_112","_ref_121","_ref_123","_ref_124"],"namespace":"<no location>","location":"","key":"DecoratorList"},{"type":"production","id":"prod-Decorator","name":"Decorator","referencingIds":["_ref_76","_ref_77","_ref_80","_ref_122","_ref_125"],"namespace":"<no location>","location":"","key":"Decorator"},{"type":"production","id":"prod-DecoratorMemberExpression","name":"DecoratorMemberExpression","referencingIds":["_ref_81","_ref_83","_ref_84","_ref_117","_ref_118"],"namespace":"<no location>","location":"","key":"DecoratorMemberExpression"},{"type":"production","id":"prod-DecoratorCallExpression","name":"DecoratorCallExpression","referencingIds":["_ref_82","_ref_119","_ref_120"],"namespace":"<no location>","location":"","key":"DecoratorCallExpression"},{"type":"clause","id":"sec-new-syntax","aoid":null,"title":"New Productions","titleHTML":"New Productions","number":"1.1","namespace":"<no location>","location":"","referencingIds":[],"key":"New Productions"},{"type":"production","id":"prod-PropertyDefinition","name":"PropertyDefinition","referencingIds":[],"namespace":"<no location>","location":"","key":"PropertyDefinition"},{"type":"production","id":"prod-ClassDeclaration","name":"ClassDeclaration","referencingIds":[],"namespace":"<no location>","location":"","key":"ClassDeclaration"},{"type":"production","id":"prod-ClassExpression","name":"ClassExpression","referencingIds":[],"namespace":"<no location>","location":"","key":"ClassExpression"},{"type":"production","id":"prod-ClassElement","name":"ClassElement","referencingIds":["_ref_110"],"namespace":"<no location>","location":"","key":"ClassElement"},{"type":"clause","id":"sec-updated-syntax","aoid":null,"title":"Updated Productions","titleHTML":"Updated Productions","number":"1.2","namespace":"<no location>","location":"","referencingIds":[],"key":"Updated Productions"},{"type":"clause","id":"sec-syntax","aoid":null,"title":"Syntax","titleHTML":"Syntax","number":"1","namespace":"<no location>","location":"","referencingIds":[],"key":"Syntax"},{"type":"production","id":"prod-MethodDefinition","name":"MethodDefinition","referencingIds":["_ref_85","_ref_88","_ref_100","_ref_101","_ref_104","_ref_106","_ref_107","_ref_108","_ref_109","_ref_113","_ref_114","_ref_115"],"namespace":"<no location>","location":"","key":"MethodDefinition"},{"type":"clause","id":"sec-runtime-semantics-definemethod","aoid":null,"title":"Runtime Semantics: DefineMethod","titleHTML":"Runtime Semantics: DefineMethod","number":"2.1.1","namespace":"<no location>","location":"","referencingIds":[],"key":"Runtime Semantics: DefineMethod"},{"type":"production","id":"prod-ClassTail","name":"ClassTail","referencingIds":["_ref_89","_ref_90","_ref_93","_ref_95","_ref_96","_ref_99"],"namespace":"<no location>","location":"","key":"ClassTail"},{"type":"clause","id":"sec-runtime-semantics-classdefinitionevaluation","aoid":null,"title":"Runtime Semantics: ClassDefinitionEvaluation","titleHTML":"Runtime Semantics: ClassDefinitionEvaluation","number":"2.1.2","namespace":"<no location>","location":"","referencingIds":[],"key":"Runtime Semantics: ClassDefinitionEvaluation"},{"type":"production","id":"prod-FormalParameters","name":"FormalParameters","referencingIds":[],"namespace":"<no location>","location":"","key":"FormalParameters"},{"type":"production","id":"prod-GeneratorMethod","name":"GeneratorMethod","referencingIds":["_ref_116"],"namespace":"<no location>","location":"","key":"GeneratorMethod"},{"type":"clause","id":"sec-method-definitions-runtime-semantics-propertydefinitionevaluation","aoid":null,"title":"Runtime Semantics: PropertyDefinitionEvaluation","titleHTML":"Runtime Semantics: PropertyDefinitionEvaluation","number":"2.1.3","namespace":"<no location>","location":"","referencingIds":[],"key":"Runtime Semantics: PropertyDefinitionEvaluation"},{"type":"clause","id":"sec-updated-semantics","aoid":null,"title":"Updated Operations","titleHTML":"Updated Operations","number":"2.1","namespace":"<no location>","location":"","referencingIds":[],"key":"Updated Operations"},{"type":"clause","id":"sec-decorator-runtime-semantics-decoratorevaluation","aoid":null,"title":"Runtime Semantics: DecoratorEvaluation","titleHTML":"Runtime Semantics: DecoratorEvaluation","number":"2.2.1","namespace":"<no location>","location":"","referencingIds":[],"key":"Runtime Semantics: DecoratorEvaluation"},{"type":"clause","id":"sec-method-definitions-runtime-semantics-decoratorlistevaluation","aoid":null,"title":"Runtime Semantics: DecoratorListEvaluation","titleHTML":"Runtime Semantics: DecoratorListEvaluation","number":"2.2.2","namespace":"<no location>","location":"","referencingIds":[],"key":"Runtime Semantics: DecoratorListEvaluation"},{"type":"clause","id":"sec-runtime-semantics-makefunctionuninitialized","aoid":null,"title":"Runtime Semantics: MakeFunctionUninitialized","titleHTML":"Runtime Semantics: MakeFunctionUninitialized","number":"2.2.3","namespace":"<no location>","location":"","referencingIds":[],"key":"Runtime Semantics: MakeFunctionUninitialized"},{"type":"clause","id":"sec-runtime-semantics-makefunctioninitialized","aoid":null,"title":"Runtime Semantics: MakeFunctionInitialized","titleHTML":"Runtime Semantics: MakeFunctionInitialized","number":"2.2.4","namespace":"<no location>","location":"","referencingIds":[],"key":"Runtime Semantics: MakeFunctionInitialized"},{"type":"clause","id":"sec-runtime-semantics-makefunctioninitialized","aoid":null,"title":"Runtime Semantics: IsUninitializedFunction","titleHTML":"Runtime Semantics: IsUninitializedFunction","number":"2.2.5","namespace":"<no location>","location":"","referencingIds":[],"key":"Runtime Semantics: IsUninitializedFunction"},{"type":"clause","id":"sec-runtime-semantics-makeclasselementsinitialized","aoid":null,"title":"Runtime Semantics: MakeClassElementsInitialized","titleHTML":"Runtime Semantics: MakeClassElementsInitialized","number":"2.2.6","namespace":"<no location>","location":"","referencingIds":[],"key":"Runtime Semantics: MakeClassElementsInitialized"},{"type":"op","aoid":"DecorateElement","refId":"sec-decorate-element","location":"","referencingIds":[],"key":"DecorateElement"},{"type":"clause","id":"sec-decorate-element","aoid":"DecorateElement","title":"DecorateElement","titleHTML":"DecorateElement","number":"2.2.7","namespace":"<no location>","location":"","referencingIds":["_ref_16"],"key":"DecorateElement"},{"type":"clause","id":"sec-decorate-class","aoid":null,"title":"DecorateClass","titleHTML":"DecorateClass","number":"2.2.8","namespace":"<no location>","location":"","referencingIds":[],"key":"DecorateClass"},{"type":"clause","id":"sec-from-element-descriptor","aoid":null,"title":"FromElementDescriptor","titleHTML":"FromElementDescriptor","number":"2.2.9","namespace":"<no location>","location":"","referencingIds":[],"key":"FromElementDescriptor"},{"type":"clause","id":"sec-to-element-descriptor","aoid":null,"title":"ToElementDescriptor","titleHTML":"ToElementDescriptor","number":"2.2.10","namespace":"<no location>","location":"","referencingIds":[],"key":"ToElementDescriptor"},{"type":"clause","id":"sec-new-semantics","aoid":null,"title":"New Operations","titleHTML":"New Operations","number":"2.2","namespace":"<no location>","location":"","referencingIds":[],"key":"New Operations"},{"type":"clause","id":"sec-semantics","aoid":null,"title":"Semantics","titleHTML":"Semantics","number":"2","namespace":"<no location>","location":"","referencingIds":[],"key":"Semantics"},{"type":"clause","id":"sec-copyright-and-software-license","aoid":null,"title":"Copyright & Software License","titleHTML":"Copyright &amp; Software License","number":"A","namespace":"<no location>","location":"","referencingIds":[],"key":"Copyright & Software License"}]</script><script>"use strict";
 
 function Search(menu) {
@@ -1782,7 +1780,7 @@ li.menu-search-result-term:before {
   text-align: right;
   padding-right: 5px;
 }
-</style></head><body><div id="menu-toggle">☰</div><div id="menu-spacer"></div><div id="menu"><div id="menu-search"><input type="text" id="menu-search-box" placeholder="Search..."><div id="menu-search-results" class="inactive"></div></div><div id="menu-pins"><div class="menu-pane-header">Pins</div><ul id="menu-pins-list"></ul></div><div class="menu-pane-header">Table of Contents</div><div id="menu-toc"><ol class="toc"><li><span class="item-toggle">◢</span><a href="#sec-intro" title="Introduction">Introduction</a><ol class="toc"><li><span class="item-toggle-none"></span><a href="#sec-intro-syntax" title="Syntax">Syntax</a></li><li><span class="item-toggle-none"></span><a href="#sec-intro-decorator-functions" title="Decorator Functions">Decorator Functions</a></li></ol></li><li><span class="item-toggle">◢</span><a href="#sec-syntax" title="Syntax"><span class="secnum">1</span> Syntax</a><ol class="toc"><li><span class="item-toggle-none"></span><a href="#sec-new-syntax" title="New Productions"><span class="secnum">1.1</span> New Productions</a></li><li><span class="item-toggle-none"></span><a href="#sec-updated-syntax" title="Updated Productions"><span class="secnum">1.2</span> Updated Productions</a></li></ol></li><li><span class="item-toggle">◢</span><a href="#sec-semantics" title="Semantics"><span class="secnum">2</span> Semantics</a><ol class="toc"><li><span class="item-toggle">◢</span><a href="#sec-updated-semantics" title="Updated Operations"><span class="secnum">2.1</span> Updated Operations</a><ol class="toc"><li><span class="item-toggle-none"></span><a href="#sec-runtime-semantics-definemethod" title="Runtime Semantics: DefineMethod"><span class="secnum">2.1.1</span> RS: DefineMethod</a></li><li><span class="item-toggle-none"></span><a href="#sec-runtime-semantics-classdefinitionevaluation" title="Runtime Semantics: ClassDefinitionEvaluation"><span class="secnum">2.1.2</span> RS: ClassDefinitionEvaluation</a></li><li><span class="item-toggle-none"></span><a href="#sec-method-definitions-runtime-semantics-propertydefinitionevaluation" title="Runtime Semantics: PropertyDefinitionEvaluation"><span class="secnum">2.1.3</span> RS: PropertyDefinitionEvaluation</a></li></ol></li><li><span class="item-toggle">◢</span><a href="#sec-new-semantics" title="New Operations"><span class="secnum">2.2</span> New Operations</a><ol class="toc"><li><span class="item-toggle-none"></span><a href="#sec-decorator-runtime-semantics-decoratorevaluation" title="Runtime Semantics: DecoratorEvaluation"><span class="secnum">2.2.1</span> RS: DecoratorEvaluation</a></li><li><span class="item-toggle-none"></span><a href="#sec-method-definitions-runtime-semantics-decoratorlistevaluation" title="Runtime Semantics: DecoratorListEvaluation"><span class="secnum">2.2.2</span> RS: DecoratorListEvaluation</a></li><li><span class="item-toggle-none"></span><a href="#sec-runtime-semantics-makefunctionuninitialized" title="Runtime Semantics: MakeFunctionUninitialized"><span class="secnum">2.2.3</span> RS: MakeFunctionUninitialized</a></li><li><span class="item-toggle-none"></span><a href="#sec-runtime-semantics-makefunctioninitialized" title="Runtime Semantics: MakeFunctionInitialized"><span class="secnum">2.2.4</span> RS: MakeFunctionInitialized</a></li><li><span class="item-toggle-none"></span><a href="#sec-runtime-semantics-makefunctioninitialized" title="Runtime Semantics: IsUninitializedFunction"><span class="secnum">2.2.5</span> RS: IsUninitializedFunction</a></li><li><span class="item-toggle-none"></span><a href="#sec-runtime-semantics-makeclasselementsinitialized" title="Runtime Semantics: MakeClassElementsInitialized"><span class="secnum">2.2.6</span> RS: MakeClassElementsInitialized</a></li><li><span class="item-toggle-none"></span><a href="#sec-decorate-element" title="DecorateElement"><span class="secnum">2.2.7</span> DecorateElement</a></li><li><span class="item-toggle-none"></span><a href="#sec-decorate-class" title="DecorateClass"><span class="secnum">2.2.8</span> DecorateClass</a></li><li><span class="item-toggle-none"></span><a href="#sec-from-element-descriptor" title="FromElementDescriptor"><span class="secnum">2.2.9</span> FromElementDescriptor</a></li><li><span class="item-toggle-none"></span><a href="#sec-to-element-descriptor" title="ToElementDescriptor"><span class="secnum">2.2.10</span> ToElementDescriptor</a></li></ol></li></ol></li><li><span class="item-toggle-none"></span><a href="#sec-copyright-and-software-license" title="Copyright &amp; Software License"><span class="secnum">A</span> Copyright &amp; Software License</a></li></ol></div></div><div id="spec-container"><h1 class="version first">Stage 1 Draft / January 3, 2017</h1><h1 class="title">Decorators</h1>
+</style></head><body><div id="menu-toggle">☰</div><div id="menu-spacer"></div><div id="menu"><div id="menu-search"><input type="text" id="menu-search-box" placeholder="Search..."><div id="menu-search-results" class="inactive"></div></div><div id="menu-pins"><div class="menu-pane-header">Pins</div><ul id="menu-pins-list"></ul></div><div class="menu-pane-header">Table of Contents</div><div id="menu-toc"><ol class="toc"><li><span class="item-toggle">◢</span><a href="#sec-intro" title="Introduction">Introduction</a><ol class="toc"><li><span class="item-toggle-none"></span><a href="#sec-intro-syntax" title="Syntax">Syntax</a></li><li><span class="item-toggle-none"></span><a href="#sec-intro-decorator-functions" title="Decorator Functions">Decorator Functions</a></li></ol></li><li><span class="item-toggle">◢</span><a href="#sec-syntax" title="Syntax"><span class="secnum">1</span> Syntax</a><ol class="toc"><li><span class="item-toggle-none"></span><a href="#sec-new-syntax" title="New Productions"><span class="secnum">1.1</span> New Productions</a></li><li><span class="item-toggle-none"></span><a href="#sec-updated-syntax" title="Updated Productions"><span class="secnum">1.2</span> Updated Productions</a></li></ol></li><li><span class="item-toggle">◢</span><a href="#sec-semantics" title="Semantics"><span class="secnum">2</span> Semantics</a><ol class="toc"><li><span class="item-toggle">◢</span><a href="#sec-updated-semantics" title="Updated Operations"><span class="secnum">2.1</span> Updated Operations</a><ol class="toc"><li><span class="item-toggle-none"></span><a href="#sec-runtime-semantics-definemethod" title="Runtime Semantics: DefineMethod"><span class="secnum">2.1.1</span> RS: DefineMethod</a></li><li><span class="item-toggle-none"></span><a href="#sec-runtime-semantics-classdefinitionevaluation" title="Runtime Semantics: ClassDefinitionEvaluation"><span class="secnum">2.1.2</span> RS: ClassDefinitionEvaluation</a></li><li><span class="item-toggle-none"></span><a href="#sec-method-definitions-runtime-semantics-propertydefinitionevaluation" title="Runtime Semantics: PropertyDefinitionEvaluation"><span class="secnum">2.1.3</span> RS: PropertyDefinitionEvaluation</a></li></ol></li><li><span class="item-toggle">◢</span><a href="#sec-new-semantics" title="New Operations"><span class="secnum">2.2</span> New Operations</a><ol class="toc"><li><span class="item-toggle-none"></span><a href="#sec-decorator-runtime-semantics-decoratorevaluation" title="Runtime Semantics: DecoratorEvaluation"><span class="secnum">2.2.1</span> RS: DecoratorEvaluation</a></li><li><span class="item-toggle-none"></span><a href="#sec-method-definitions-runtime-semantics-decoratorlistevaluation" title="Runtime Semantics: DecoratorListEvaluation"><span class="secnum">2.2.2</span> RS: DecoratorListEvaluation</a></li><li><span class="item-toggle-none"></span><a href="#sec-runtime-semantics-makefunctionuninitialized" title="Runtime Semantics: MakeFunctionUninitialized"><span class="secnum">2.2.3</span> RS: MakeFunctionUninitialized</a></li><li><span class="item-toggle-none"></span><a href="#sec-runtime-semantics-makefunctioninitialized" title="Runtime Semantics: MakeFunctionInitialized"><span class="secnum">2.2.4</span> RS: MakeFunctionInitialized</a></li><li><span class="item-toggle-none"></span><a href="#sec-runtime-semantics-makefunctioninitialized" title="Runtime Semantics: IsUninitializedFunction"><span class="secnum">2.2.5</span> RS: IsUninitializedFunction</a></li><li><span class="item-toggle-none"></span><a href="#sec-runtime-semantics-makeclasselementsinitialized" title="Runtime Semantics: MakeClassElementsInitialized"><span class="secnum">2.2.6</span> RS: MakeClassElementsInitialized</a></li><li><span class="item-toggle-none"></span><a href="#sec-decorate-element" title="DecorateElement"><span class="secnum">2.2.7</span> DecorateElement</a></li><li><span class="item-toggle-none"></span><a href="#sec-decorate-class" title="DecorateClass"><span class="secnum">2.2.8</span> DecorateClass</a></li><li><span class="item-toggle-none"></span><a href="#sec-from-element-descriptor" title="FromElementDescriptor"><span class="secnum">2.2.9</span> FromElementDescriptor</a></li><li><span class="item-toggle-none"></span><a href="#sec-to-element-descriptor" title="ToElementDescriptor"><span class="secnum">2.2.10</span> ToElementDescriptor</a></li></ol></li></ol></li><li><span class="item-toggle-none"></span><a href="#sec-copyright-and-software-license" title="Copyright &amp; Software License"><span class="secnum">A</span> Copyright &amp; Software License</a></li></ol></div></div><div id="spec-container"><h1 class="version first">Stage 2 Draft / January 4, 2017</h1><h1 class="title">Decorators</h1>
 <emu-intro id="sec-intro">
   <h1>Introduction</h1>
   <p>Decorators offer a convenient declarative syntax to modify the shape of class declarations. This capability can be used for myriad purposes including modifying the descriptor of the declared member (@nonconfigurable/@enumerable), adding metadata (as used by Angular), and more.</p>
@@ -1820,94 +1818,86 @@ li.menu-search-result-term:before {
 
     <p>A deprecation decorator:</p>
 
-    <pre><code>
-      import { deprecate } from 'core-decorators';
+    <pre><code class="javascript hljs"><span class="hljs-keyword">import</span> { deprecate } <span class="hljs-keyword">from</span> <span class="hljs-string">'core-decorators'</span>;
 
-      class Person {
-        @deprecate
-        facepalm() {}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span> </span>{
+  @deprecate
+  facepalm() {}
 
-        @deprecate('We stopped facepalming')
-        facepalmHard() {}
+  @deprecate(<span class="hljs-string">'We stopped facepalming'</span>)
+  facepalmHard() {}
 
-        @deprecate('We stopped facepalming', { url: 'http://knowyourmeme.com/memes/facepalm' })
-        facepalmHarder() {}
-      }
+  @deprecate(<span class="hljs-string">'We stopped facepalming'</span>, { <span class="hljs-attr">url</span>: <span class="hljs-string">'http://knowyourmeme.com/memes/facepalm'</span> })
+  facepalmHarder() {}
+}
 
-      let person = new Person();
+<span class="hljs-keyword">let</span> person = <span class="hljs-keyword">new</span> Person();
 
-      person.facepalm();
-      // DEPRECATION Person#facepalm: This function will be removed in future versions.
+person.facepalm();
+<span class="hljs-comment">// DEPRECATION Person#facepalm: This function will be removed in future versions.</span>
 
-      person.facepalmHard();
-      // DEPRECATION Person#facepalmHard: We stopped facepalming
+person.facepalmHard();
+<span class="hljs-comment">// DEPRECATION Person#facepalmHard: We stopped facepalming</span>
 
-      person.facepalmHarder();
-      // DEPRECATION Person#facepalmHarder: We stopped facepalming
-      //
-      //     See http://knowyourmeme.com/memes/facepalm for more details.
-      //
-    </code></pre>
+person.facepalmHarder();
+<span class="hljs-comment">// DEPRECATION Person#facepalmHarder: We stopped facepalming</span>
+<span class="hljs-comment">//</span>
+<span class="hljs-comment">//     See http://knowyourmeme.com/memes/facepalm for more details.</span>
+<span class="hljs-comment">//</span></code></pre>
 
     <p>A throttling decorator:</p>
 
-    <pre><code>
-      import { throttle } from 'core-decorators';
+    <pre><code class="javascript hljs"><span class="hljs-keyword">import</span> { throttle } <span class="hljs-keyword">from</span> <span class="hljs-string">'core-decorators'</span>;
 
-      class Editor {
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Editor</span> </span>{
 
-        content = '';
+  content = <span class="hljs-string">''</span>;
 
-        @throttle(500, { leading: false })
-        updateContent(content) {
-          this.content = content;
-        }
-      }
-    </code></pre>
+  @throttle(<span class="hljs-number">500</span>, { <span class="hljs-attr">leading</span>: <span class="hljs-literal">false</span> })
+  updateContent(content) {
+    <span class="hljs-keyword">this</span>.content = content;
+  }
+}</code></pre>
 
     <p>A mixin class decorator:</p>
 
-    <pre><code>
-      import { mixin } from 'core-decorators';
+    <pre><code class="javascript hljs"><span class="hljs-keyword">import</span> { mixin } <span class="hljs-keyword">from</span> <span class="hljs-string">'core-decorators'</span>;
 
-      const SingerMixin = {
-        sing(sound) {
-          alert(sound);
-        }
-      };
+<span class="hljs-keyword">const</span> SingerMixin = {
+  sing(sound) {
+    alert(sound);
+  }
+};
 
-      const FlyMixin = {
-        // All types of property descriptors are supported
-        get speed() {},
-        fly() {},
-        land() {}
-      };
+<span class="hljs-keyword">const</span> FlyMixin = {
+  <span class="hljs-comment">// All types of property descriptors are supported</span>
+  get speed() {},
+  fly() {},
+  land() {}
+};
 
-      @mixin(SingerMixin, FlyMixin)
-      class Bird {
-        singMatingCall() {
-          this.sing('tweet tweet');
-        }
-      }
+@mixin(SingerMixin, FlyMixin)
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Bird</span> </span>{
+  singMatingCall() {
+    <span class="hljs-keyword">this</span>.sing(<span class="hljs-string">'tweet tweet'</span>);
+  }
+}
 
-      var bird = new Bird();
-      bird.singMatingCall();
-      // alerts "tweet tweet"
-    </code></pre>
+<span class="hljs-keyword">var</span> bird = <span class="hljs-keyword">new</span> Bird();
+bird.singMatingCall();
+<span class="hljs-comment">// alerts "tweet tweet"</span></code></pre>
 
     <p>A decorator that using <code>console.time</code> to time a function:</p>
 
-    <pre><code>
-      class Bird {
-        @time('sing')
-        sing() {
-        }
-      }
+    <pre><code class="javascript hljs"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Bird</span> </span>{
+  @time(<span class="hljs-string">'sing'</span>)
+  sing() {
+  }
+}
 
-      var bird = new Bird();
-      bird.sing(); // console.time label will be 'sing-0'
-      bird.sing(); // console.time label will be 'sing-1'
-    </code></pre>
+<span class="hljs-keyword">var</span> bird = <span class="hljs-keyword">new</span> Bird();
+bird.sing(); <span class="hljs-comment">// console.time label will be 'sing-0'</span>
+bird.sing(); <span class="hljs-comment">// console.time label will be 'sing-1'</span></code></pre>
   </emu-intro>
 
   <h2>Frameworks</h2>
@@ -1916,109 +1906,98 @@ li.menu-search-result-term:before {
 
   <p>Aurelia:</p>
 
-  <code><pre>    import { computedFrom } from 'aurelia-framework';
+  <pre><code class="javascript hljs"><span class="hljs-keyword">var</span> x = <span class="hljs-number">1</span>;
 
-    export class Welcome{
-      firstName = 'John';
-      lastName = 'Doe';
+<span class="hljs-keyword">import</span> { computedFrom } <span class="hljs-keyword">from</span> <span class="hljs-string">'aurelia-framework'</span>;
 
-      @computedFrom('firstName', 'lastName')
-      get fullName(){
-        return `${this.firstName} ${this.lastName}`;
-      }
-    }
-  </pre></code>
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Welcome</span></span>{
+  firstName = <span class="hljs-string">'John'</span>;
+  lastName = <span class="hljs-string">'Doe'</span>;
 
-  <code><pre>    import { customElement } from 'aurelia-framework';
+  @computedFrom(<span class="hljs-string">'firstName'</span>, <span class="hljs-string">'lastName'</span>)
+  get fullName(){
+    <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">${<span class="hljs-keyword">this</span>.firstName}</span> <span class="hljs-subst">${<span class="hljs-keyword">this</span>.lastName}</span>`</span>;
+  }
+}</code></pre>
 
-    @customElement('nav-bar')
-    export class NavBar {}
-  </pre></code>
+  <pre><code class="javascript hljs"><span class="hljs-keyword">import</span> { customElement } <span class="hljs-keyword">from</span> <span class="hljs-string">'aurelia-framework'</span>;
 
-  <code><pre>    @useShadowDOM
-    @customElement('my-expander')
-    export class Expander {
-      @bindable isExpanded = false;
-      @bindable header;
-    }
-  </pre></code>
+@customElement(<span class="hljs-string">'nav-bar'</span>)
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NavBar</span> </span>{}</code></pre>
+
+  <pre><code class="javascript hljs">@useShadowDOM
+@customElement(<span class="hljs-string">'my-expander'</span>)
+<span class="hljs-keyword">export</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Expander</span> </span>{
+  @bindable isExpanded = <span class="hljs-literal">false</span>;
+  @bindable header;
+}</code></pre>
 
   <p>Ember:</p>
 
-  <code><pre>    import Ember from 'ember';
-    import computed from 'ember-computed-decorators';
+  <pre><code class="javascript hljs"><span class="hljs-keyword">import</span> Ember <span class="hljs-keyword">from</span> <span class="hljs-string">'ember'</span>;
+<span class="hljs-keyword">import</span> computed <span class="hljs-keyword">from</span> <span class="hljs-string">'ember-computed-decorators'</span>;
 
-    export default class extends Ember.Component {
-      @computed('first', 'last')
-      name(first, last) {
-        return `${first} ${last}`;
-      }
-    };
-  </pre></code>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Ember</span>.<span class="hljs-title">Component</span> </span>{
+  @computed(<span class="hljs-string">'first'</span>, <span class="hljs-string">'last'</span>)
+  name(first, last) {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">${first}</span> <span class="hljs-subst">${last}</span>`</span>;
+  }
+};</code></pre>
 
-  <code><pre>    import Ember from 'ember';
-    import computed, { readOnly } from 'ember-computed-decorators';
+  <pre><code class="javascript hljs"><span class="hljs-keyword">import</span> Ember <span class="hljs-keyword">from</span> <span class="hljs-string">'ember'</span>;
+<span class="hljs-keyword">import</span> computed, { readOnly } <span class="hljs-keyword">from</span> <span class="hljs-string">'ember-computed-decorators'</span>;
 
-    export default class extends Ember.Component {
-      @readOnly
-      @computed('first', 'last')
-      name(first, last) {
-        return `${first} ${last}`;
-      }
-    };
-  </pre></code>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Ember</span>.<span class="hljs-title">Component</span> </span>{
+  @readOnly
+  @computed(<span class="hljs-string">'first'</span>, <span class="hljs-string">'last'</span>)
+  name(first, last) {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">${first}</span> <span class="hljs-subst">${last}</span>`</span>;
+  }
+};</code></pre>
 
-  <pre><code>
-    import DS from 'ember-data';
-    import {
-      attr,
-      hasMany
-    } from "ember-computed-decorators/ember-data";
+  <pre><code class="javascript hljs"><span class="hljs-keyword">import</span> DS <span class="hljs-keyword">from</span> <span class="hljs-string">'ember-data'</span>;
+<span class="hljs-keyword">import</span> {
+  attr,
+  hasMany
+} <span class="hljs-keyword">from</span> <span class="hljs-string">"ember-computed-decorators/ember-data"</span>;
 
-    export default class extends DS.Model {
-      @attr firstName,
-      @hasMany users
-    };
-  </code></pre>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">DS</span>.<span class="hljs-title">Model</span> </span>{
+  @attr firstName,
+  @hasMany users
+};</code></pre>
 
-  <pre><code>
-    import Ember from 'ember';
-    import { alias } from 'ember-computed-decorators';
-    export default class extends Ember.Component {
-      person: {
-        first: 'Joe'
-      }
+  <pre><code class="javascript hljs"><span class="hljs-keyword">import</span> Ember <span class="hljs-keyword">from</span> <span class="hljs-string">'ember'</span>;
+<span class="hljs-keyword">import</span> { alias } <span class="hljs-keyword">from</span> <span class="hljs-string">'ember-computed-decorators'</span>;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Ember</span>.<span class="hljs-title">Component</span> </span>{
+  person: {
+    <span class="hljs-attr">first</span>: <span class="hljs-string">'Joe'</span>
+  }
 
-      @alias('person.first') firstName
-    };
-  </code></pre>
+  @alias(<span class="hljs-string">'person.first'</span>) firstName
+};</code></pre>
 
-  <pre><code>
-    import Ember from 'ember';
-    import { intersect } from 'ember-computed-decorators';
+  <pre><code class="javascript hljs"><span class="hljs-keyword">import</span> Ember <span class="hljs-keyword">from</span> <span class="hljs-string">'ember'</span>;
+<span class="hljs-keyword">import</span> { intersect } <span class="hljs-keyword">from</span> <span class="hljs-string">'ember-computed-decorators'</span>;
 
-    export default class extends Ember.Component {
-      likes = [ 'tacos', 'puppies', 'pizza' ];
-      foods = [ 'tacos', 'pizza' ];
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Ember</span>.<span class="hljs-title">Component</span> </span>{
+  likes = [ <span class="hljs-string">'tacos'</span>, <span class="hljs-string">'puppies'</span>, <span class="hljs-string">'pizza'</span> ];
+  foods = [ <span class="hljs-string">'tacos'</span>, <span class="hljs-string">'pizza'</span> ];
 
-      @intersect('likes', 'foods') favoriteFoods; // ['tacos', 'pizza']
-    };
-  </code></pre>
+  @intersect(<span class="hljs-string">'likes'</span>, <span class="hljs-string">'foods'</span>) favoriteFoods; <span class="hljs-comment">// ['tacos', 'pizza']</span>
+};</code></pre>
 
   <p>Angular (using TypeScript):</p>
 
-  <pre><code>
-    @Component({
-      selector: 'talk-cmp',
-      directives: [FormattedRating, WatchButton, RateButton],
-      templateUrl: 'talk_cmp.html'
-    })
-    class TalkCmp {
-      @Input() talk: Talk;
-      @Output() rate: EventEmitter;
-      // ...
-    }
-  </code></pre>
+  <pre><code class="typescript hljs"><span class="hljs-meta">@Component</span>({
+  selector: <span class="hljs-string">'talk-cmp'</span>,
+  directives: [FormattedRating, WatchButton, RateButton],
+  templateUrl: <span class="hljs-string">'talk_cmp.html'</span>
+})
+<span class="hljs-keyword">class</span> TalkCmp {
+  <span class="hljs-meta">@Input</span>() talk: Talk;
+  <span class="hljs-meta">@Output</span>() rate: EventEmitter;
+  <span class="hljs-comment">// ...</span>
+}</code></pre>
 </emu-intro>
 
 <emu-clause id="sec-syntax">
