@@ -100,21 +100,9 @@ emu-example pre {
     </emu-note>
     <p>Elements of the |DecoratorList| are evaluated in-order but their resulting decorator functions are evaluated in a bottom-up fashion. The value returned by a decorator becomes the input of the next decorator.</p>
   </emu-intro>
+  
   <emu-intro id=sec-intro-decorator-functions>
-    <h1>Decorator Functions</h1>
-    <p>A <dfn id=member-decorator-function>member decorator function</dfn> is a function which takes a member descriptor and which returns a member descriptor. A <dfn>member descriptor</dfn> is similar to a property descriptor and has the following shape:</p>
-    <pre><code class=typescript>
-      interface MemberDesciptor {
-        kind: "Property"
-        key: string,
-        isStatic: boolean,
-        descriptor: PropertyDescriptor,
-        extras?: MemberDescriptor[]
-        finisher?: (klass): void;
-      }
-    </code></pre>
-    <p>A <dfn id=class-decorator-function>class decorator function</dfn> is a function which takes a constructor, heritage (parent class), and an array of MemberDescriptors that represent the instance and static members of the class.</p>
-
+    <h1>Example Decorator Functions</h1>
     <p>There are a number of examples of real-world usage based on previous drafts of this proposal.</p>
 
     <emu-example id="example-core-decorators">
@@ -405,7 +393,36 @@ emu-example pre {
 
 <emu-clause id=sec-semantics>
   <h1>Semantics</h1>
-
+  <emu-clause id=sec-decorator-functions>
+    <h1>Decorator Functions</h1>
+    <p>A <dfn>decorator function</dfn> is a function that takes and returns either a member descriptor or a class descriptor. The body of a decorator function modifies and returns the descriptor it receives to change the semantics of the decorated entity.</p>
+    <emu-clause id=sec-decorator-functions-member-descriptor>
+      <h1>Member Descriptors</h1>
+      <p>A <dfn>member descriptor</dfn> describes a member of a class or object literal and has the following shape:</p>
+      <pre><code class=typescript>
+        interface MemberDesciptor {
+          kind: "property"
+          key: string,
+          isStatic: boolean,
+          descriptor: PropertyDescriptor,
+          extras?: MemberDescriptor[]
+          finisher?: (klass): void;
+        }
+      </code></pre>
+    </emu-clause>
+    <emu-clause id=sec-decorator-functions-member-descriptor>
+      <h1>Class Descriptors</h1>
+      <p>A <dfn>class descriptor</dfn> describes a class and has the following shape:</p>
+      <pre><code class=typescript>
+        interface ClassDesciptor {
+          kind: "class",
+          constructor: Function,
+          heritage: Object | null,
+          elements: MemberDescriptor[]
+        }
+      </code></pre>
+    </emu-clause>
+  </emu-clause>
   <emu-clause id=sec-updated-semantics>
     <h1>Updated Operations</h1>
 
