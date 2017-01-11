@@ -44,7 +44,7 @@ is still uninitialized a TypeError is thrown.
 
 11.  When a function explicitly returns a non-object from a [[Construct]] invocation but the `this` value has been initialized, 
 the `this` value is returned as the value of [[Construct]]
-    * This is required for ES1-5 compatability
+    * This is required for ES1-5 compatibility
 
 12.  If a `class` definition does not include an explicit constructor definition, it defaults to: `constructor(...args) {super(...args)};` if the `class` has a non-null `extends` clause. Otherwise it defaults to: `constructor() {};`.
     * If you define a constructor body then you inherit both the constructor argument signature and body from your superclass.
