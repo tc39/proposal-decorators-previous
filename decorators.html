@@ -79,7 +79,7 @@ emu-example pre {
 
 <emu-intro id=sec-intro>
   <h1>Introduction</h1>
-  <p>Decorators offer a convenient declarative syntax to modify the shape of class declarations. This capability can be used for myriad purposes including modifying the descriptor of the declared member (@nonconfigurable/@enumerable), adding metadata (as used by Angular), and more.</p>
+  <p>Decorators offer a convenient declarative syntax to modify the shape of class declarations. This capability can be used for myriad purposes including modifying the descriptor of the declared member (`@nonconfigurable`/`@enumerable`), adding metadata (as used by Angular), and more.</p>
 
   <emu-intro id=sec-intro-syntax>
     <h1>Syntax</h1>
@@ -426,7 +426,7 @@ emu-example pre {
   <emu-clause id=sec-updated-semantics>
     <h1>Updated Operations</h1>
 
-    <emu-clause id=sec-runtime-semantics-definemethod>
+    <emu-clause id=sec-runtime-semantics-definemethod aoid=DefineMethod>
       <h1>Runtime Semantics: DefineMethod</h1>
       <p>With <del>parameters _object_ and</del> optional parameter _functionPrototype_.</p>
       <emu-grammar>MethodDefinition : PropertyName `(` StrictFormalParameters `)` `{` FunctionBody `}`</emu-grammar>
@@ -444,7 +444,7 @@ emu-example pre {
       </emu-alg>
     </emu-clause>
 
-    <emu-clause id=sec-runtime-semantics-classdefinitionevaluation>
+    <emu-clause id=sec-runtime-semantics-classdefinitionevaluation aoid=ClassDefinitionEvaluation>
       <h1>Runtime Semantics: ClassDefinitionEvaluation</h1>
       <p>With parameter _className_.</p>
       <emu-grammar>ClassTail : ClassHeritage? `{` ClassBody? `}`</emu-grammar>
@@ -503,7 +503,6 @@ emu-example pre {
           1. <ins>Let _static_ be IsStatic of _m_.</ins>
           1. <ins>If _m_'s |DecoratorList| is present, then let _decorators_ be the result of performing DecoratorListEvaluation of |DecoratorList|.</ins>
           1. <ins>Else, let _decorators_ be a new empty List.</ins>
-          1. <ins>Let _finishers_ be a new empty List.</ins>
           1. <ins>ReturnIfAbrupt(_decorators_).</ins>
           1. <ins>Let _el_ be the result of performing PropertyDefinitionEvaluation for _m_ with arguments _proto_, *false*.</ins>
           1. <ins>If _el_ is an abrupt completion, then</ins>
@@ -514,6 +513,7 @@ emu-example pre {
           1. <ins>Append _element_ to the end of _elements_.</ins>
         1. <ins>Let _coalesced_ be the new List created by combining getters and setters with the same [[Key]]. If both a getter and setter with the same [[Key]] have a non-empty [[Decorators]], throw a new Error.</ins>
         1. <ins>Let _elementDescriptors_ be a new empty List.</ins>
+        1. <ins>Let _finishers_ be a new empty List.</ins>
         1. <ins>For each _element_ in order from _coalesced_</ins>
           1. <ins>Let _decorated_ be ? DecorateElement(_element_).</ins>
           1. <ins>Append _decorated_.[[Descriptor]] to the end of _elementDescriptors_.</ins>
@@ -528,7 +528,7 @@ emu-example pre {
         1. <ins>Append all elements of _result_.[[Finishers]] to the end of _finishers_.</ins>
         1. <ins>Let _constructor_ be _result_.[[Constructor]].</ins>
         1. <ins>Let _elements_ be _result_.[[Elements]].</ins>
-        1. <ins>If |ClassHeritage?| is present and _protoParent_ is not *null*, then set _constructor_'s [[ConstructorKind]] internal slot to `"derived"`.</ins>
+        1. <ins>If |ClassHeritage_opt| is present and _protoParent_ is not *null*, then set _constructor_'s [[ConstructorKind]] internal slot to `"derived"`.</ins>
         1. <ins>Perform MakeConstructor(_constructor_, *false*, _proto_).</ins>
         1. <ins>Perform MakeClassConstructor(_constructor_).</ins>
         1. <ins>Perform CreateMethodProperty(_proto_, `"constructor"`, _constructor_).</ins>
@@ -547,7 +547,7 @@ emu-example pre {
         1. If _className_ is not *undefined*, then
           1. Perform _classScopeEnvRec_.InitializeBinding(_className_, <del>_F_</del><ins>_constructor_</ins>).
         1. <ins>For each _finisher_ in order from _finishers_, do
-          1. <ins>Perform ? Call(_finisher_, *undefined*, « _constructor »).</ins>
+          1. <ins>Perform ? Call(_finisher_, *undefined*, « _constructor_ »).</ins>
         1. Return <del>_F_</del><ins>_constructor_</ins>.
       </emu-alg>
       <emu-note type=editor>
@@ -636,23 +636,23 @@ emu-example pre {
 
   <emu-clause id=sec-new-semantics>
     <h1>New Operations</h1>
-    <emu-clause id=sec-decorator-runtime-semantics-decoratorevaluation>
+    <emu-clause id=sec-decorator-runtime-semantics-decoratorevaluation aoid="DecoratorEvaluation">
       <h1>Runtime Semantics: DecoratorEvaluation</h1>
       <emu-grammar>Decorator : `@` DecoratorMemberExpression[?Yield]</emu-grammar>
       <emu-alg>
-        1. Let _ref be the result of evaluating |DecoratorMemberExpression|.
-        1. Let _value be ? GetValue(_ref_).
+        1. Let _ref_ be the result of evaluating |DecoratorMemberExpression|.
+        1. Let _value_ be ? GetValue(_ref_).
         1. Return _value_.
       </emu-alg>
       <emu-grammar>Decorator : `@` DecoratorCallExpression[?Yield]</emu-grammar>
       <emu-alg>
-        1. Let _ref be the result of evaluating |DecoratorCallExpression|.
-        1. Let _value be ? GetValue(_ref_).
+        1. Let _ref_ be the result of evaluating |DecoratorCallExpression|.
+        1. Let _value_ be ? GetValue(_ref_).
         1. Return _value_.
       </emu-alg>
     </emu-clause>
 
-    <emu-clause id=sec-method-definitions-runtime-semantics-decoratorlistevaluation>
+    <emu-clause id=sec-method-definitions-runtime-semantics-decoratorlistevaluation aoid="DecoratorListEvaluation">
       <h1>Runtime Semantics: DecoratorListEvaluation</h1>
       <emu-grammar>DecoratorList : DecoratorList[?Yield]? Decorator[?Yield]</emu-grammar>
       <emu-alg>
@@ -664,7 +664,7 @@ emu-example pre {
       </emu-alg>
     </emu-clause>
 
-    <emu-clause id=sec-runtime-semantics-makefunctionuninitialized>
+    <emu-clause id=sec-runtime-semantics-makefunctionuninitialized aoid=MakeFunctionUninitialized>
       <h1>Runtime Semantics: MakeFunctionUninitialized</h1>
       <p>With parameter _function_.</p>
       <emu-note type=editor>
@@ -672,7 +672,7 @@ emu-example pre {
       </emu-note>
     </emu-clause>
 
-    <emu-clause id=sec-runtime-semantics-makefunctioninitialized>
+    <emu-clause id=sec-runtime-semantics-makefunctioninitialized aoid=MakeFunctionInitialized>
       <h1>Runtime Semantics: MakeFunctionInitialized</h1>
       <p>With parameter _function_.</p>
       <emu-note type=editor>
@@ -680,7 +680,7 @@ emu-example pre {
       </emu-note>
     </emu-clause>
 
-    <emu-clause id=sec-runtime-semantics-makefunctioninitialized>
+    <emu-clause id=sec-runtime-semantics-isuninitializedfunction aoid=IsUninitializedFunction>
       <h1>Runtime Semantics: IsUninitializedFunction</h1>
       <p>With parameter _function_.</p>
       <emu-note type=editor>
@@ -688,7 +688,7 @@ emu-example pre {
       </emu-note>
     </emu-clause>
 
-    <emu-clause id=sec-runtime-semantics-makeclasselementsinitialized>
+    <emu-clause id=sec-runtime-semantics-makeclasselementsinitialized aoid=MakeClassElementsInitialized>
       <h1>Runtime Semantics: MakeClassElementsInitialized</h1>
       <p>With parameter _elements_.</p>
       <emu-alg>
@@ -710,9 +710,9 @@ emu-example pre {
         1. Let _extras_ be a new empty List.
         1. Let _finishers_ be a new empty List.
         1. Let _previousDescriptor_ be ? FromElementDescriptor(_element_).
-        1. For each _decorator_ in element_.[[Decorators]], in reverse list order do
+        1. For each _decorator_ in _element_.[[Decorators]], in reverse list order do
           1. Let _result_ be ? Call(_decorator_, *undefined*, « _previousDescriptor_ »).
-          1. Let _currentDescriptor_ be ? Get(_result_, *"descriptor"*).
+          1. Let _currentDescriptor_ be ? Get(_result_, `"descriptor"`).
           1. Let _current_ be ? ToElementDescriptor(_result_).
           1. If _current_.[[Finisher]] is not *undefined*, then
             1. Append _current_.[[Finisher]] to the end of _finishers_.
@@ -748,7 +748,7 @@ emu-example pre {
         1. For each _decorator_ in _decorators_, in reverse list order do
           1. Let _result_ be ? Call(_decorator_, *undefined*, « _previousConstructor_, _heritage_, _previousDescriptors_ »).
           1. Let _previousConstructor_ be ? Get(_result_, `"constructor"`).
-          1. Let _finisher_ be ? Get(_result_, *"finisher"*).
+          1. Let _finisher_ be ? Get(_result_, `"finisher"`).
           1. If _finisher_ is not *undefined*, then append _finisher_ to the end of _finishers_.
           1. Let _elementsObject_ be ? Get(_result_, `"elements"`).
           1. If _elementsObject_ is not *undefined*, then
@@ -768,7 +768,7 @@ emu-example pre {
       </emu-note>
     </emu-clause>
 
-    <emu-clause id=sec-from-element-descriptor>
+    <emu-clause id=sec-from-element-descriptor aoid=FromElementDescriptor>
       <h1>FromElementDescriptor</h1>
       <p>With parameter _element_.</p>
       <emu-alg>
@@ -778,12 +778,12 @@ emu-example pre {
         1. Perform ! CreateDataPropertyOrThrow(_obj_, `"key"`, _element_.[[Key]]).
         1. Perform ! CreateDataPropertyOrThrow(_obj_, `"descriptor"`, ! FromPropertyDescriptor(_element_.[[Descriptor]])).
         1. If _element_.[[Finisher]] is not *undefined*, then
-          1. Perform ! CreateDataPropertyOrThrow(_obj_, *"finisher"*, _element_.[[Finisher]]).
+          1. Perform ! CreateDataPropertyOrThrow(_obj_, `"finisher"`, _element_.[[Finisher]]).
         1. Return _obj_.
       </emu-alg>
     </emu-clause>
 
-    <emu-clause id=sec-to-element-descriptor>
+    <emu-clause id=sec-to-element-descriptor aoid=ToElementDescriptor>
       <h1>ToElementDescriptor</h1>
       <p>With parameter _descriptor_.</p>
       <emu-alg>
@@ -792,8 +792,8 @@ emu-example pre {
         1. Let _static_ be ToBoolean(? Get(_descriptor_, `"isStatic"`)).
         1. Let _key_ be ? ToString(? Get(_descriptor_, `"key"`)).
         1. Let _descriptor_ be ? ToPropertyDescriptor(? Get(_descriptor_, `"descriptor"`)).
-        1. Let _hasFinisher_ be ? HasProperty(_descriptor_, 'finisher').
-        1. If _hasFinisher_ is *true*, let _finisher_ be ? Get(_descriptor_, *"key"*).
+        1. Let _hasFinisher_ be ? HasProperty(_descriptor_, `"finisher"`).
+        1. If _hasFinisher_ is *true*, let _finisher_ be ? Get(_descriptor_, `"key"`).
         1. Else, let _finisher_ be *undefined*.
         1. Return the Record {[[Kind]]: _kind_, [[Static]]: _static_, [[Key]]: _key_, [[Descriptor]]: _descriptor_, [[Finisher]]: _finisher_}.
       </emu-alg>
