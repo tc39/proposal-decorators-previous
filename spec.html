@@ -18739,20 +18739,8 @@
     </emu-clause>
   </emu-clause>
 
-  <emu-clause id="sec-decorator-list">
-    <h1>Decorators</h1>
-    <h2>Syntax</h2>
-    <emu-grammar>
-      DecoratorList[Yield] :
-        DecoratorList[?Yield]? Decorator[?Yield]
-
-      Decorator[Yield] :
-        `@` LeftHandSideExpression[?Yield]
-    </emu-grammar>
-  </emu-clause>
-
-
-  <emu-clause id="sec-decorator">
+  <emu-clause id="sec-decorator"
+              aoid="Decorator">
     <h1>Decorator</h1>
     <h2>Syntax</h2>
     <emu-grammar>
@@ -18760,7 +18748,8 @@
         `@` LeftHandSideExpression[?Yield]
     </emu-grammar>
 
-    <emu-clause id="sec-decorator-runtime-semantics-decoratorevaluation">
+    <emu-clause id="sec-decorator-runtime-semantics-decoratorevaluation"
+                aoid="DecoratorEvaluation">
       <h1>Runtime Semantics: DecoratorEvaluation</h1>
       <emu-grammar>`@` LeftHandSideExpression[?Yield]</emu-grammar>
       <emu-alg>
@@ -18771,14 +18760,17 @@
     </emu-clause>
   </emu-clause>
 
-  <emu-clause id="sec-decorator-list">
+  <emu-clause id="sec-decorator-list"
+              aoid="DecoratorList">
     <h1>DecoratorList</h1>
     <h2>Syntax</h2>
     <emu-grammar>
       DecoratorList[Yield] :
         DecoratorList[?Yield]? Decorator[?Yield]
     </emu-grammar>
-    <emu-clause id="sec-method-definitions-runtime-semantics-decoratorlistevaluation">
+
+    <emu-clause id="sec-method-definitions-runtime-semantics-decoratorlistevaluation"
+                aoid="DecoratorListEvaluation">
       <h1>Runtime Semantics: DecoratorListEvaluation</h1>
       <emu-grammar>DecoratorList[?Yield]? Decorator[?Yield]</emu-grammar>
       <emu-alg>
@@ -18791,26 +18783,27 @@
     </emu-clause>
   </emu-clause>
 
-  <emu-clause id="sec-decorate-element">
+  <emu-clause id="sec-decorate-element"
+              aoid="DecorateElement" >
     <h1>DecorateElement</h1>
     <p>With parameter _element_.</p>
     <emu-alg>
       1. Assert: _element_.[[Kind]] is `"property"`.
       1. Let _extras_ be a new empty List.
       1. Let _previousDescriptor_ be ? FromElementDescriptor(_element_).
-      1. For each _decorator_ in element_.[[Decorators]], in reverse list order do
+      1. For each _decorator_ in _element_.[[Decorators]], in reverse list order do
         1. Let _result_ be ? Call(_decorator_, *undefined*, « _previousDescriptor_ »).
         1. Let _currentDescriptor_ be ? Get(_result_, `"descriptor"`).
         1. Let _current_ be ? ToElementDescriptor(_currentDescriptor_).
         1. Let _previousDescriptor_ be ? FromElementDescriptor(_current_).
         1. Let _extrasObject_ be ? Get(_result_, `"extras"`).
         1. If _extrasObject_ is not *undefined*, then:
-            1. Let _iterator_ be ? GetIterator(_extrasObject_).
-            1. Repeat
-          1. Let _next_ be ? IteratorStep(_iterator_).
-              1. If _next_ is *false*, then break.
-              1. Let _nextValue_ be ? IteratorValue(_next_).
-              1. Append _nextValue_ to the end of _extras_.
+          1. Let _iterator_ be ? GetIterator(_extrasObject_).
+          1. Repeat
+            1. Let _next_ be ? IteratorStep(_iterator_).
+            1. If _next_ is *false*, then break.
+            1. Let _nextValue_ be ? IteratorValue(_next_).
+            1. Append _nextValue_ to the end of _extras_.
       1. Let _extras_ be the result of merging any _extras_ with the same [[Key]] and [[Static]].
       1. Return the Record {[[Descriptor]]: _previousDescriptor_, [[Extras]]: _extras_}.
     </emu-alg>
@@ -18822,7 +18815,8 @@
     </emu-note>
   </emu-clause>
 
-  <emu-clause id="sec-decorate-class">
+  <emu-clause id="sec-decorate-class"
+              aoid="DecorateClass" >
     <h1>DecorateClass</h1>
     <p>With parameters _decorators_, _constructor_, _heritage_ and _elementDescriptors_.</p>
     <emu-alg>
@@ -18834,9 +18828,9 @@
         1. Let _previousConstructor_ be ? Get(_result_, `"constructor"`).
         1. Let _elementsObject_ be ? Get(_result_, `"elements"`).
         1. If _elementsObject_ is not *undefined*, then:
-            1. Let _iterator_ be ? GetIterator(_extrasObject_).
+          1. Let _iterator_ be ? GetIterator(_extrasObject_).
             1. Repeat
-          1. Let _next_ be ? IteratorStep(_iterator_).
+              1. Let _next_ be ? IteratorStep(_iterator_).
               1. If _next_ is *false*, then break.
               1. Let _nextValue_ be ? IteratorValue(_next_).
               1. Append _nextValue_ to the end of _elements_.
@@ -18850,7 +18844,8 @@
     </emu-note>
   </emu-clause>
 
-  <emu-clause id="sec-from-element-descriptor">
+  <emu-clause id="sec-from-element-descriptor"
+              aoid="FromElementDescriptor">
     <h1>FromElementDescriptor</h1>
     <p>With parameter _element_.</p>
     <emu-alg>
@@ -18864,7 +18859,8 @@
     </emu-alg>
   </emu-clause>
 
-  <emu-clause id="sec-to-element-descriptor">
+  <emu-clause id="sec-to-element-descriptor"
+              aoid="ToElementDescriptor">
     <h1>ToElementDescriptor</h1>
     <p>With parameter _descriptor_.</p>
     <emu-alg>
