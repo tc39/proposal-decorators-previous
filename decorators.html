@@ -1,4 +1,5 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <meta charset="utf8">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
 <pre class=metadata>
@@ -6,6 +7,7 @@ title: Decorators
 stage: 2
 contributors: Yehuda Katz, Brian Terlson, Ecma International
 </pre>
+
 <style>
 emu-example figure {
   align-items: initial;
@@ -22,11 +24,11 @@ emu-note span.note {
   color: #fff;
   background-color: #474747;
   width: initial;
-  padding-right: 50px;
+  padding-right: 55px;
 }
 
 emu-note div.note-contents {
-  padding-left: 5px;
+  padding-left: 10px;
 }
 
 emu-note[type=editor] {
@@ -37,7 +39,7 @@ emu-note[type=editor] span.note {
 }
 
 emu-example {
-  border-left: 5px solid #006387;
+  border-left: 7px solid #006387;
   margin: 1em 0;
 }
 
@@ -46,10 +48,10 @@ emu-example figure figcaption:first-child {
   color: #fff;
   background-color: #006387;
   margin: 0;
-  padding: 0 50px 0 5px;
+  padding: 0 50px 0 7px;
   font-weight: normal;
   text-transform: uppercase;
-  margin-left: -5px;
+  margin-left: -10px;
 }
 
 emu-example figure figcaption:nth-child(2) {
@@ -79,7 +81,9 @@ emu-example pre {
 
 <emu-intro id=sec-intro>
   <h1>Introduction</h1>
-  <p>Decorators offer a convenient declarative syntax to modify the shape of class declarations. This capability can be used for myriad purposes including modifying the descriptor of the declared member (@nonconfigurable/@enumerable), adding metadata (as used by Angular), and more.</p>
+  
+  <p>
+  Decorators offer a convenient declarative syntax to modify the shape of class declarations. This capability can be used for myriad purposes including modifying the descriptor of the declared member (@nonconfigurable/@enumerable), adding metadata (as used by Angular), and more.</p>
 
   <emu-intro id=sec-intro-syntax>
     <h1>Syntax</h1>
